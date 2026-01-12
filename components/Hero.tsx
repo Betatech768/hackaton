@@ -1,9 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { JSX, useState } from "react";
 
-type Props = {};
-
-export default function Hero({}: Props) {
+export default function Hero(): JSX.Element {
   const [selectedImages, setSelectedImages] = useState<(string | null)[]>([
     null,
     null,
@@ -11,6 +9,7 @@ export default function Hero({}: Props) {
     null,
   ]);
 
+  //Function to add image
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number
@@ -25,6 +24,12 @@ export default function Hero({}: Props) {
       };
       reader.readAsDataURL(file);
     }
+  };
+  //Function to remove image
+  const handleRemoveImage = (index: number) => {
+    const newImages = [...selectedImages];
+    newImages[index] = null;
+    setSelectedImages(newImages);
   };
   return (
     <section className="flex flex-col items-center justify-center min-h-dvh p-5 font-poppins bg-[url('/heroImage.jpg')] bg-cover bg-no-repeat bg-center pt-60 pb-40">
@@ -55,14 +60,39 @@ export default function Hero({}: Props) {
               <div key={view} className="flex flex-col items-center">
                 <label
                   htmlFor={`upload-${index}`}
-                  className="cursor-pointer w-full aspect-square bg-zinc-700/50 rounded-lg border-2 border-dashed border-zinc-600 hover:border-red-500 transition-colors flex flex-col items-center justify-center overflow-hidden group"
+                  className="cursor-pointer w-full aspect-square bg-zinc-700/50 rounded-lg border-2 border-dashed border-zinc-600 hover:border-red-500 transition-colors flex flex-col items-center justify-center overflow-hidden group relative"
                 >
                   {selectedImages[index] ? (
-                    <img
-                      src={selectedImages[index]}
-                      alt={`${view} view`}
-                      className="w-full h-full object-cover"
-                    />
+                    <>
+                      <img
+                        src={selectedImages[index]}
+                        alt={`${view} view`}
+                        className="w-full h-full object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          handleRemoveImage(index);
+                        }}
+                        className="absolute top-2 right-2 bg-red-500 hover:bg-red-600 text-white rounded-full p-2 opacity-0 group-hover:opacity-100 transition-opacity z-10"
+                        aria-label="Remove image"
+                      >
+                        <svg
+                          className="w-4 h-4"
+                          fill="none"
+                          stroke="currentColor"
+                          viewBox="0 0 24 24"
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </button>
+                    </>
                   ) : (
                     <>
                       <svg
