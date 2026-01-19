@@ -1,10 +1,11 @@
 "use client";
 
+import Hero from "@/components/features/speaker-analysis/Hero";
 import Recommendations from "@/components/features/speaker-analysis/Recommendations";
 import Tabs from "@/components/features/speaker-analysis/Tabs";
 import UploadForm from "@/components/features/speaker-analysis/UploadForm";
 
-export default function Hero() {
+export default function EchoVision() {
   const handleAnalyzeHall = (images: (string | null)[]) => {
     console.log("Uploaded images:", images);
     // 👉 Next step:
