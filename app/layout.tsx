@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Ubuntu, Poppins, Montserrat } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/layout/Header";
+import Footer from "@/components/layout/Footer";
 
 const ubuntu = Ubuntu({
   variable: "--font-ubuntu",
@@ -34,25 +36,9 @@ export default function RootLayout({
       <body
         className={`${ubuntu.variable} ${poppins.variable} ${montserrat.variable} antialiased`}
       >
-        <section className="fixed top-0 right-0 left-0 z-50 bg-zinc-900/30 backdrop-blur-lg">
-          {/* Navbar area */}
-          <nav className="flex flex-col justify-center items-center p-10">
-            <p className="font-ubuntu text-5xl">EchoVision</p>
-            <p className="font-ubuntu p-2">
-              Turn hall photos into intelligent speaker placement using Gemini
-              AI
-            </p>
-          </nav>
-        </section>
+        <Header />
         {children}
-        <footer className="fixed font-ubuntu bottom-0 right-0 left-0 z-50 bg-zinc-900/30 backdrop-blur-lg flex justify-center items-center p-5">
-          <div>
-            <p>
-              © {new Date().getFullYear()} EchoVision. Powered by Gemini 3
-              Hackathon.
-            </p>
-          </div>
-        </footer>
+        <Footer />
       </body>
     </html>
   );
