@@ -1,77 +1,6 @@
-import { NextResponse } from "next/server";
-import { GoogleGenerativeAI, SchemaType } from "@google/generative-ai";
-import { readFileSync, existsSync } from "fs";
-import path from "path";
-import mime from "mime";
-
-// TypeScript interfaces for type safety
-interface SpeakerPosition {
-  type: "main" | "delay" | "fill" | "column" | "subwoofer" | "monitor";
-  x: number;
-  y: number;
-  z: number;
-  description?: string;
-  angle_horizontal?: number; // Optional: horizontal aiming angle in degrees
-  angle_vertical?: number; // Optional: vertical aiming angle in degrees
-}
-
-interface SpeakerRecommendation {
-  speaker_type: "main" | "delay" | "fill" | "column" | "subwoofer" | "monitor";
-  required: boolean; // true if required, false if optional/not needed
-  quantity: number; // 0 if not required
-  reasoning: string; // Why this type is or isn't needed
-  positions?: SpeakerPosition[]; // Only populated if required=true
-}
-
-interface Dimensions {
-  width_m: number;
-  length_m: number;
-  height_m: number;
-}
-
-interface CriticalIssue {
-  severity: "Critical" | "Warning" | "Minor";
-  title: string;
-  description: string;
-  impact: string;
-}
-
-interface RecommendedFix {
-  issue_reference: string;
-  solution: string;
-  steps: string[];
-  estimated_cost_usd: number;
-  priority: "High" | "Medium" | "Low";
-}
-
-interface PlacementView {
-  view_type: "2D" | "3D" | "VR" | "AR";
-  description: string;
-  key_features: string[];
-}
-
-interface AnalysisResult {
-  room_type: string;
-  dimensions: Dimensions;
-  total_area_sqm: number;
-  ceiling_type: string; // e.g., "flat", "cathedral", "sloped", "tiered"
-  seating_capacity_estimate: number;
-
-  // Comprehensive speaker recommendations
-  speaker_recommendations: SpeakerRecommendation[];
-
-  // All speaker positions (flattened from recommendations)
-  all_speaker_positions: SpeakerPosition[];
-
-  placement_views: PlacementView[];
-  critical_issues: CriticalIssue[]; // Can be empty array
-  recommended_fixes: RecommendedFix[]; // Can be empty array
-  total_estimated_cost_usd: number; // Will be 0 if no fixes needed
-  analysis_summary: string;
-  room_status: "Excellent" | "Good" | "Needs Improvement" | "Critical";
-  positive_features?: string[]; // Optional: things the room does well
-  acoustic_challenges?: string[]; // Optional: inherent challenges of the space
-}
+import { NextResponse, NextRequest } from "next/server";
+import { GoogleGenerativeAI, SchemaType, Schema } from "@google/generative-ai";
+import { AnalysisResult } from "@/types/speaker";
 
 // Updated Gemini API Schema
 const speakerAnalysisSchema = {
@@ -334,34 +263,24 @@ const speakerAnalysisSchema = {
     "analysis_summary",
     "room_status",
   ],
-};
+} satisfies Schema;
 
-export async function GET() {
+export async function POST(request: NextRequest) {
   try {
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const root = process.cwd();
+    const { images } = await request.json();
 
-    const imageNames = [
-      "hall-front.jpg",
-      "hall-back.jpg",
-      "hall-side1.jpg",
-      "hall-side2.jpg",
-    ];
-    const imageParts = imageNames.map((name) => {
-      const filePath = path.join(root, "public", "images", name);
-
-      if (!existsSync(filePath)) {
-        throw new Error(`Missing image at: ${filePath}`);
-      }
-
-      const imageBuffer = readFileSync(filePath);
+    const imageParts = images.filter(Boolean).map((dataUrl: string) => {
+      const [meta, base64] = dataUrl.split(",");
+      const mimeType = meta.match(/data:(.*);base64/)?.[1] ?? "image/jpeg";
       return {
         inlineData: {
-          mimeType: mime.getType(filePath) || "image/jpeg",
-          data: imageBuffer.toString("base64"),
+          mimeType,
+          data: base64,
         },
       };
     });
+
+    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({
       model: "gemini-3-pro-preview",
       systemInstruction: `You are EchoVision AI. Analyze the hall images. 
@@ -389,12 +308,12 @@ export async function GET() {
     });
 
     const responseText = result.response.text();
-    return NextResponse.json(JSON.parse(responseText));
+    return NextResponse.json(JSON.parse(responseText) as AnalysisResult);
   } catch (error: any | string) {
     console.error("Analysis Error:", error);
     return NextResponse.json(
       { error: error.message || "Internal Server Error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

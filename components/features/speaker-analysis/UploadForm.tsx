@@ -3,9 +3,10 @@ import React, { useState } from "react";
 
 type UploadFormProps = {
   onAnalyze?: (images: (string | null)[]) => void;
+  loading?: boolean;
 };
 
-export default function UploadForm({ onAnalyze }: UploadFormProps) {
+export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
   const [selectedImages, setSelectedImages] = useState<(string | null)[]>([
     null,
     null,
@@ -15,7 +16,7 @@ export default function UploadForm({ onAnalyze }: UploadFormProps) {
 
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
-    index: number
+    index: number,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -42,7 +43,8 @@ export default function UploadForm({ onAnalyze }: UploadFormProps) {
       </h2>
 
       <p className="text-zinc-400 text-center mb-6">
-        Upload up to 4 images: Stage, Left, Right, Back, and Ceiling views
+        Upload up to 4 images: Stage, Left, Right, Back, and Ceiling views in
+        JPEG, PNG, WEBP, or GIF format.
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
@@ -96,11 +98,18 @@ export default function UploadForm({ onAnalyze }: UploadFormProps) {
       <div className="flex justify-center">
         <button
           className="button"
-          disabled={selectedImages.filter(Boolean).length === 0}
+          disabled={selectedImages.filter(Boolean).length === 0 || loading}
           onClick={handleAnalyze}
         >
           <div className="dots_border"></div>
-          <span className="text_button">Analyze Hall</span>
+          <span className="text_button flex items-center gap-2">
+            {loading && (
+              <svg className="loader relative" viewBox="25 25 50 50">
+                <circle r="20" cy="50" cx="50"></circle>
+              </svg>
+            )}
+            {loading ? "Analyzing Hall" : "Analyze Hall"}
+          </span>
         </button>
       </div>
     </div>
