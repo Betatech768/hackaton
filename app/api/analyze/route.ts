@@ -11,6 +11,15 @@ const speakerAnalysisSchema = {
       description:
         "Type of room (e.g., Conference Hall, Auditorium, Church, Theater, Stadium)",
     },
+    stage_area: {
+      type: SchemaType.OBJECT,
+      properties: {
+        length_m: { type: SchemaType.NUMBER },
+        width_m: { type: SchemaType.NUMBER },
+      },
+      description: "Area of the stage in square meters",
+      required: ["length_m", "width_m"],
+    },
     dimensions: {
       type: SchemaType.OBJECT,
       properties: {

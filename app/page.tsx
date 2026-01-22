@@ -54,6 +54,7 @@ export default function EchoVision() {
     total_estimated_cost_usd,
     room_type,
     room_status,
+    stage_area,
     analysis_summary,
     speaker_recommendations,
     all_speaker_positions,
@@ -61,6 +62,7 @@ export default function EchoVision() {
     dimensions,
   } = analysisResult || {};
 
+  console.log(stage_area ?? "No stage area data yet");
   const hallIssues = critical_issues?.map(
     ({ description, impact, severity, title }) => ({
       description,

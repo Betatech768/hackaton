@@ -50,7 +50,7 @@ export interface AnalysisResult {
   total_area_sqm: number;
   ceiling_type: string; // e.g., "flat", "cathedral", "sloped", "tiered"
   seating_capacity_estimate: number;
-
+  stage_area: number;
   // Comprehensive speaker recommendations
   speaker_recommendations: SpeakerRecommendation[];
 

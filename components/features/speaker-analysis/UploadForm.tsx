@@ -17,6 +17,8 @@ export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
     null,
     null,
   ]);
+  const [displayError, setDisplayError] = useState<string | null>(null);
+  const [isClicked, setIsClicked] = useState(false);
   const IMAGE_ROLES = ["stage", "left", "right", "back/ceiling"] as const;
 
   const handleImageUpload = (
@@ -25,7 +27,6 @@ export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onloadend = () => {
       setSelectedImages((prev) => {

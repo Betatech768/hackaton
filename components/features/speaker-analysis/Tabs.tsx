@@ -6,6 +6,7 @@ import { useState } from "react";
 
 // components
 import EchoVision2D from "@/views/2D/EchoVision2D";
+import EchoVision3D from "@/views/3D/EchoVision3D";
 
 type Props = {
   dimensions?: Dimensions;
@@ -72,11 +73,13 @@ export default function Tabs({ dimensions, speakerPosition }: Props) {
               <p className="text-white mb-6">
                 View and arrange objects in a traditional 2D floor plan layout.
               </p>
-              <div className="aspect-video bg-gray-100 rounded border border-gray-300 flex items-center justify-center">
-                <EchoVision2D
-                  dimensions={dimensions}
-                  speakerPosition={speakerPosition}
-                />
+              <div className="w-full max-w-4xl mx-auto">
+                <div className="relative w-full aspect-5/8 max-h-[70vh]">
+                  <EchoVision2D
+                    dimensions={dimensions}
+                    speakerPosition={speakerPosition}
+                  />
+                </div>
               </div>
             </div>
           )}
@@ -90,8 +93,10 @@ export default function Tabs({ dimensions, speakerPosition }: Props) {
                 Interact with objects in a fully rendered 3D environment.
               </p>
               <div className="aspect-video bg-linear-to-b from-blue-100 to-blue-50 rounded border border-gray-300 flex items-center justify-center">
-                {/* Place three.js Output here */}
-                <span className="text-gray-400">3D Viewport</span>
+                <EchoVision3D
+                  dimensions={dimensions}
+                  speakers={speakerPosition}
+                />
               </div>
             </div>
           )}
