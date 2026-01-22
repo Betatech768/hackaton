@@ -112,7 +112,7 @@ export default function Recommendations({
         </div>
         <div>{displayRecmmendedFixes}</div>
         <div className="text-3xl font-popins items-center justify-center text-white mb-4 text-center p-6 m-6">
-          Total Cost to Fix Issues: {totalEstimatedCost} USD
+          Estimated Cost to Fix Issues: {totalEstimatedCost} USD
         </div>
       </section>
     </>

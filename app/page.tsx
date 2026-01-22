@@ -1,5 +1,9 @@
 "use client";
+
 import { useState } from "react";
+
+// Types
+import { AnalysisResult } from "@/types/speaker";
 
 // components
 import Hero from "@/components/features/speaker-analysis/Hero";
@@ -7,16 +11,19 @@ import Recommendations from "@/components/features/speaker-analysis/Recommendati
 import Tabs from "@/components/features/speaker-analysis/Tabs";
 import UploadForm from "@/components/features/speaker-analysis/UploadForm";
 
-// Types
-import { AnalysisResult } from "@/types/speaker";
+type HallImage = {
+  role: "stage" | "left" | "right" | "back/ceiling";
+  dataUrl: string;
+};
 
 export default function EchoVision() {
   const [loading, setLoading] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(
     null as AnalysisResult | null,
   );
-  const handleAnalyzeHall = async (images: (string | null)[]) => {
+  const handleAnalyzeHall = async (images: (HallImage | null)[]) => {
     const imagesToSend = images.filter(Boolean);
+    console.log("Images to send for analysis:", imagesToSend);
 
     if (imagesToSend.length === 0) return;
     setLoading(true);
@@ -51,6 +58,7 @@ export default function EchoVision() {
     speaker_recommendations,
     all_speaker_positions,
     placement_views,
+    dimensions,
   } = analysisResult || {};
 
   const hallIssues = critical_issues?.map(
@@ -69,7 +77,12 @@ export default function EchoVision() {
         {!analysisResult && (
           <UploadForm onAnalyze={handleAnalyzeHall} loading={loading} />
         )}
-        {analysisResult && <Tabs />}
+        {analysisResult && (
+          <Tabs
+            dimensions={dimensions}
+            speakerPosition={all_speaker_positions}
+          />
+        )}
       </div>
 
       {analysisResult && (

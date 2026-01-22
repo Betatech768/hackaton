@@ -269,7 +269,8 @@ export async function POST(request: NextRequest) {
   try {
     const { images } = await request.json();
 
-    const imageParts = images.filter(Boolean).map((dataUrl: string) => {
+    const imageParts = images.filter(Boolean).map((image: any) => {
+      const { dataUrl } = image;
       const [meta, base64] = dataUrl.split(",");
       const mimeType = meta.match(/data:(.*);base64/)?.[1] ?? "image/jpeg";
       return {
@@ -283,7 +284,21 @@ export async function POST(request: NextRequest) {
     const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
     const model = genAI.getGenerativeModel({
       model: "gemini-3-pro-preview",
-      systemInstruction: `You are EchoVision AI. Analyze the hall images. 
+      systemInstruction: `
+      You are EchoVision AI. Analyze the hall images.
+      Each image is labeled with its viewpoint.
+
+        STAGE VIEW:
+        <image>
+
+        LEFT WALL VIEW:
+        <image>
+
+        RIGHT WALL VIEW:
+        <image>
+
+        BACK/CEILING OF HALL VIEW:
+        <image> 
       Use the center-stage floor as origin (0,0,0). 
       Provide precise coordinate-based speaker placement and a cost analysis for issues found.`,
     });

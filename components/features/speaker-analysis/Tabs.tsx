@@ -1,11 +1,22 @@
 "use client";
+
+// Types
+import { Dimensions, SpeakerPosition } from "@/types/speaker";
 import { useState } from "react";
 
-export default function Tabs() {
+// components
+import EchoVision2D from "@/views/2D/EchoVision2D";
+
+type Props = {
+  dimensions?: Dimensions;
+  speakerPosition?: SpeakerPosition[];
+};
+
+export default function Tabs({ dimensions, speakerPosition }: Props) {
   const [activeTab, setActiveTab] = useState("2d");
 
   return (
-    <section className="flex flex-col items-center p-10 min-dvh-screen bg-zinc-800/50 backdrop-blur-sm">
+    <section className="flex flex-col items-center p-4 sm:p-6 md:p-8 lg:p-10 min-h-[60dvh] bg-zinc-800/50 backdrop-blur-sm">
       <div className="w-full max-w-4xl rounded-lg shadow-lg p-6">
         {/* Tab Navigation */}
         <div className="flex items-center justify-between w-full border-b border-gray-300 pb-2 mb-6">
@@ -62,7 +73,10 @@ export default function Tabs() {
                 View and arrange objects in a traditional 2D floor plan layout.
               </p>
               <div className="aspect-video bg-gray-100 rounded border border-gray-300 flex items-center justify-center">
-                <span className="text-gray-400">2D Canvas Area</span>
+                <EchoVision2D
+                  dimensions={dimensions}
+                  speakerPosition={speakerPosition}
+                />
               </div>
             </div>
           )}

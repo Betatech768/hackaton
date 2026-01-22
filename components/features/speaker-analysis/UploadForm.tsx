@@ -2,17 +2,22 @@
 import React, { useState } from "react";
 
 type UploadFormProps = {
-  onAnalyze?: (images: (string | null)[]) => void;
+  onAnalyze?: (images: (HallImage | null)[]) => void;
   loading?: boolean;
+};
+type HallImage = {
+  role: "stage" | "left" | "right" | "back/ceiling";
+  dataUrl: string;
 };
 
 export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
-  const [selectedImages, setSelectedImages] = useState<(string | null)[]>([
+  const [selectedImages, setSelectedImages] = useState<(HallImage | null)[]>([
     null,
     null,
     null,
     null,
   ]);
+  const IMAGE_ROLES = ["stage", "left", "right", "back/ceiling"] as const;
 
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -25,19 +30,22 @@ export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
     reader.onloadend = () => {
       setSelectedImages((prev) => {
         const updated = [...prev];
-        updated[index] = reader.result as string;
+        updated[index] = {
+          role: IMAGE_ROLES[index],
+          dataUrl: reader.result as string,
+        };
         return updated;
       });
     };
+
     reader.readAsDataURL(file);
   };
-
   const handleAnalyze = () => {
     onAnalyze?.(selectedImages);
   };
 
   return (
-    <div className="bg-zinc-800/50 backdrop-blur-sm rounded-2xl p-8 max-w-4xl w-full">
+    <div className="bg-zinc-800/50 backdrop-blur-sm rounded-2xl p-4 sm:p-6 md:p-8 max-w-4xl w-full">
       <h2 className="text-2xl font-semibold text-white mb-2 text-center">
         Upload Hall Images
       </h2>
@@ -56,7 +64,7 @@ export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
             >
               {selectedImages[index] ? (
                 <img
-                  src={selectedImages[index]!}
+                  src={selectedImages[index]!.dataUrl}
                   alt={`${view} view`}
                   className="w-full h-full object-cover"
                 />
@@ -88,6 +96,7 @@ export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
               accept="image/*"
               className="hidden"
               onChange={(e) => handleImageUpload(e, index)}
+              disabled={loading}
             />
 
             <span className="text-white text-sm mt-2">{view}</span>
