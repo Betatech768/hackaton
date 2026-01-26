@@ -16,6 +16,14 @@ const speakerAnalysisSchema = {
       properties: {
         length_m: { type: SchemaType.NUMBER },
         width_m: { type: SchemaType.NUMBER },
+        stage_position: {
+          type: SchemaType.OBJECT,
+          properties: {
+            x_m: { type: SchemaType.NUMBER },
+            y_m: { type: SchemaType.NUMBER },
+            z_m: { type: SchemaType.NUMBER },
+          },
+        },
       },
       description: "Area of the stage in square meters",
       required: ["length_m", "width_m"],
@@ -114,7 +122,10 @@ const speakerAnalysisSchema = {
 
     all_speaker_positions: {
       type: SchemaType.ARRAY,
-      description: "Flattened array of all speaker positions across all types",
+      description: `Flattened array of all speaker positions across all types consider the stage area when placing speakers; 
+        consider the stage height when placing monitors, monitors must be on the stage. consider stage width when placing subwoofers. consider the hall 
+        height when placing the eposition of the line array speakers.
+        stage must be included in the hall dimensions and speaker positions must be relative to the hall dimensions.`,
       items: {
         type: SchemaType.OBJECT,
         properties: {
@@ -228,6 +239,27 @@ const speakerAnalysisSchema = {
       },
     },
 
+    sitting_area: {
+      type: SchemaType.OBJECT,
+      properties: {
+        position: {
+          type: SchemaType.OBJECT,
+          properties: {
+            x_m: { type: SchemaType.NUMBER },
+            y_m: { type: SchemaType.NUMBER },
+            z_m: { type: SchemaType.NUMBER },
+          },
+        },
+        dimensions: {
+          type: SchemaType.OBJECT,
+          properties: {
+            length: { type: SchemaType.NUMBER },
+            width: { type: SchemaType.NUMBER },
+          },
+        },
+      },
+    },
+
     total_estimated_cost_usd: {
       type: SchemaType.NUMBER,
       description:
@@ -270,7 +302,9 @@ const speakerAnalysisSchema = {
     "recommended_fixes",
     "total_estimated_cost_usd",
     "analysis_summary",
+    "stage_area",
     "room_status",
+    "sitting_area",
   ],
 } satisfies Schema;
 
@@ -294,22 +328,44 @@ export async function POST(request: NextRequest) {
     const model = genAI.getGenerativeModel({
       model: "gemini-3-pro-preview",
       systemInstruction: `
-      You are EchoVision AI. Analyze the hall images.
-      Each image is labeled with its viewpoint.
+      You are EchoVision AI, a professional acoustic analysis engine.
 
-        STAGE VIEW:
-        <image>
+      Your task is to analyze multiple images of the SAME enclosed hall and generate
+      a precise, engineering-grade speaker placement plan.
 
-        LEFT WALL VIEW:
-        <image>
+      STRICT RULES:
+      - Do NOT explain your reasoning
+      - Do NOT use markdown
+      - Do NOT add extra fields
+      - Output ONLY valid JSON matching the provided schema
+      - All units MUST be in meters
+      - All coordinates MUST be relative to the hall dimensions
+      - Ensure that Subwoofers, Monitors, and Fill must be relative to the stage size and positon
+      - Enusre that Subwoofers position is not under the stage.
 
-        RIGHT WALL VIEW:
-        <image>
+      COORDINATE SYSTEM:
+      - Origin (0,0,0) = front-left floor corner of the hall
+      - X axis → hall width (left to right)
+      - Y axis → height (floor to ceiling)
+      - Z axis → hall length (front to back)
 
-        BACK/CEILING OF HALL VIEW:
-        <image> 
-      Use the center-stage floor as origin (0,0,0). 
-      Provide precise coordinate-based speaker placement and a cost analysis for issues found.`,
+      PLACEMENT CONSTRAINTS:
+      - Stage MUST be inside hall dimensions
+      - Monitors MUST be on the stage
+      - Subwoofers MUST be on the floor
+      - Line arrays MUST respect hall height
+      - Speaker positions MUST NOT exceed hall bounds
+      - Sitting area must not exceed hall bounds
+      - Sitting area must respect stage position 
+      - Use realistic professional audio engineering assumptions for Sitting Area 
+
+      Use realistic professional audio engineering assumptions
+      when exact measurements are not visually available.
+
+      All angle values MUST be in degrees.
+      0 degrees faces directly toward the back of the hall (positive Z axis).
+
+      `,
     });
 
     // 4. Execute Request
@@ -320,7 +376,14 @@ export async function POST(request: NextRequest) {
           parts: [
             ...imageParts,
             {
-              text: "Analyze this hall and generate the speaker placement JSON.",
+              text: `The following images show the same hall from different viewpoints
+                      1. Stage / front view
+                      2. Left wall view
+                      3. Right wall view
+                      4. Rear / ceiling view
+
+                      Analyze the hall and generate a complete speaker analysis
+                      and placement plan using the required JSON schema`,
             },
           ],
         },

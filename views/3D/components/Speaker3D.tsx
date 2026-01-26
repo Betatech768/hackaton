@@ -1,5 +1,8 @@
+import * as THREE from "three";
+
 import { SpeakerPosition } from "@/types/speaker";
-import { speakerTypeSelection } from "./utils";
+
+import { speakerTypeSelection } from "../utils";
 
 type Props = {
   speaker: SpeakerPosition;
@@ -14,7 +17,10 @@ export default function Speaker3D({ speaker }: Props) {
   }
 
   return (
-    <group position={[speaker.x, speaker.y, speaker.z]}>
+    <group
+      position={[speaker.x, speaker.y, speaker.z]}
+      rotation={[0, THREE.MathUtils.degToRad(speaker.angle_horizontal ?? 0), 0]}
+    >
       <SpeakerComponent />
     </group>
   );

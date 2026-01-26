@@ -62,7 +62,6 @@ export default function EchoVision() {
     dimensions,
   } = analysisResult || {};
 
-  console.log(stage_area ?? "No stage area data yet");
   const hallIssues = critical_issues?.map(
     ({ description, impact, severity, title }) => ({
       description,
@@ -83,6 +82,7 @@ export default function EchoVision() {
           <Tabs
             dimensions={dimensions}
             speakerPosition={all_speaker_positions}
+            stage_area={stage_area}
           />
         )}
       </div>

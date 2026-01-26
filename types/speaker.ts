@@ -23,6 +23,16 @@ export interface Dimensions {
   height_m: number;
 }
 
+export interface StageArea {
+  length_m: number;
+  width_m: number;
+  stage_position: {
+    x_m: number;
+    y_m: number;
+    z_m: number;
+  };
+}
+
 export interface CriticalIssue {
   severity: "Critical" | "Warning" | "Minor";
   title: string;
@@ -50,7 +60,7 @@ export interface AnalysisResult {
   total_area_sqm: number;
   ceiling_type: string; // e.g., "flat", "cathedral", "sloped", "tiered"
   seating_capacity_estimate: number;
-  stage_area: number;
+  stage_area: StageArea;
   // Comprehensive speaker recommendations
   speaker_recommendations: SpeakerRecommendation[];
 
@@ -66,3 +76,13 @@ export interface AnalysisResult {
   positive_features?: string[]; // Optional: things the room does well
   acoustic_challenges?: string[]; // Optional: inherent challenges of the space
 }
+
+export type StageData = {
+  width_m: number;
+  length_m: number;
+  stage_position: {
+    x_m: number;
+    y_m: number;
+    z_m: number;
+  };
+};

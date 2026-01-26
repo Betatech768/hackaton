@@ -33,7 +33,7 @@ export default function FrontFill(props: JSX.IntrinsicElements["group"]) {
   return (
     <group {...props} dispose={null}>
       <group name="Sketchfab_Scene">
-        <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, -0.628]}>
+        <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, -1.57]}>
           <group name="speakerobjcleanermaterialmergergles">
             <mesh
               name="Object_2"
