@@ -19,7 +19,7 @@ function clamp(value: number, min: number, max: number) {
   return Math.min(Math.max(value, min), max);
 }
 
-/**
+/*
  * Converts world-space meters to SVG coordinates
  * X is centered for visualization
  * Z is depth

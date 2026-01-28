@@ -15,7 +15,5 @@ const speakersArray = {
 type SpeakerType = keyof typeof speakersArray;
 
 export function speakerTypeSelection(type: string) {
-  console.log("Rendering speaker:", type);
-
   return speakersArray[type as SpeakerType] || null;
 }

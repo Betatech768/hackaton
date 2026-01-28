@@ -1,5 +1,7 @@
-import * as THREE from "three";
 import { useMemo } from "react";
+import * as THREE from "three";
+
+// Types
 import { Dimensions } from "@/types/speaker";
 
 type Props = {

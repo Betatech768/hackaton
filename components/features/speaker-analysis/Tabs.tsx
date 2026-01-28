@@ -1,12 +1,14 @@
 "use client";
+import { useState } from "react";
 
 // Types
 import { Dimensions, SpeakerPosition, StageData } from "@/types/speaker";
-import { useState } from "react";
 
 // components
 import EchoVision2D from "@/views/2D/EchoVision2D";
 import EchoVision3D from "@/views/3D/EchoVision3D";
+import EchoVisionVr from "@/views/VR/EchoVisionVr";
+import Link from "next/link";
 
 type Props = {
   dimensions?: Dimensions;
@@ -98,7 +100,8 @@ export default function Tabs({
               <p className="text-whute mb-6 flex flex-col text-center">
                 Interact with objects in a fully rendered 3D environment.
                 <span className="text-sm text-center text-gray-400 italic font-ubuntu">
-                  Click and Drag to Pan, scroll to zoom in and out.
+                  Click and Drag to Pan, scroll to zoom in and out. Hover over
+                  speakers to see description
                 </span>
               </p>
               <div className="aspect-video bg-linear-to-b from-blue-100 to-blue-50 rounded border border-gray-300 flex items-center justify-center">
@@ -119,10 +122,19 @@ export default function Tabs({
               <p className="text-whute mb-6">
                 Experience immersive virtual reality placement with VR headset
                 support.
+                <span className="text-sm text-center text-gray-400 italic font-ubuntu">
+                  Please see requirements for VR in <Link href="">Docs</Link>
+                </span>
               </p>
               <div className="aspect-video bg-linear-to-br from-purple-100 to-pink-50 rounded border border-gray-300 flex items-center justify-center">
                 {/* Place three.js VR Output here */}
-                <span className="text-gray-400">VR Experience</span>
+                <span className="text-gray-400">
+                  <EchoVisionVr
+                    dimensions={dimensions}
+                    speakers={speakerPosition}
+                    stage_area={stage_area}
+                  />
+                </span>
               </div>
             </div>
           )}

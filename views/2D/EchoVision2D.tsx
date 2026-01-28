@@ -1,8 +1,14 @@
 // EchoVision2D.tsx
-import { Dimensions, SpeakerPosition, StageData } from "@/types/speaker";
-import { mapSpeakersToSvg, VIEWBOX_HEIGHT, VIEWBOX_WIDTH, HALL } from "./utils";
-import CoverageCone from "./CoverageCone";
 import { useMemo } from "react";
+
+// Types
+import { Dimensions, SpeakerPosition, StageData } from "@/types/speaker";
+
+// components
+import CoverageCone from "./CoverageCone";
+
+// helpers
+import { mapSpeakersToSvg, VIEWBOX_HEIGHT, VIEWBOX_WIDTH, HALL } from "./utils";
 
 type Props = {
   dimensions?: Dimensions;
@@ -26,6 +32,14 @@ export default function EchoVision2D({
   if (!dimensions) return null;
 
   const svgSpeakers = mapSpeakersToSvg(speakerPosition ?? [], dimensions);
+
+  // Memoize unique speaker types for legend
+  const uniqueSpeakerTypes = useMemo(() => {
+    const types = new Set<string>();
+    svgSpeakers.forEach((speaker) => types.add(speaker.type));
+    return Array.from(types);
+  }, [svgSpeakers]);
+
   // Sort subwoofers to the front so they are drawn first (layered underneath)
   const sortedSpeakers = useMemo(() => {
     return [...svgSpeakers].sort((a, b) => {
@@ -34,6 +48,7 @@ export default function EchoVision2D({
       return 0;
     });
   }, [svgSpeakers]);
+
   return (
     <svg
       viewBox={`0 0 ${VIEWBOX_WIDTH} ${VIEWBOX_HEIGHT}`}
@@ -46,7 +61,6 @@ export default function EchoVision2D({
           <rect x={HALL.x} y={HALL.y} width={HALL.width} height={HALL.height} />
         </clipPath>
       </defs>
-
       {/* ===== HALL ===== */}
       <rect
         x={HALL.x}
@@ -57,7 +71,6 @@ export default function EchoVision2D({
         stroke="#777"
         strokeWidth={4}
       />
-
       {/* ===== STAGE ===== */}
       <rect
         x={HALL.x + HALL.width * 0.2}
@@ -79,7 +92,6 @@ export default function EchoVision2D({
       >
         STAGE
       </text>
-
       {/* ===== SPEAKERS ===== */}
       <g clipPath="url(#hall-clip)">
         {sortedSpeakers.map((sp, i) => {
@@ -123,27 +135,35 @@ export default function EchoVision2D({
           );
         })}
       </g>
-
       {/* ===== LEGEND ===== */}
       <g transform="translate(20, 420)">
         <text fill="white" fontSize={32} fontWeight="bold">
           Speakers
         </text>
 
-        {Object.entries(SPEAKER_COLORS).map(([type, color], i) => (
-          <g key={type} transform={`translate(0, ${60 + i * 46})`}>
-            <rect x={0} y={-14} width={20} height={20} rx={4} fill={color} />
-            <text
-              x={32}
-              y={0}
-              fill="white"
-              fontSize={22}
-              dominantBaseline="middle"
-            >
-              {type}
-            </text>
-          </g>
-        ))}
+        {uniqueSpeakerTypes.map((type, i) => {
+          return (
+            <g key={type} transform={`translate(0, ${60 + i * 46})`}>
+              <rect
+                x={0}
+                y={-14}
+                width={20}
+                height={20}
+                rx={4}
+                fill={SPEAKER_COLORS[type]}
+              />
+              <text
+                x={32}
+                y={0}
+                fill="white"
+                fontSize={22}
+                dominantBaseline="middle"
+              >
+                {type}
+              </text>
+            </g>
+          );
+        })}
       </g>
     </svg>
   );
