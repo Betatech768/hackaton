@@ -78,7 +78,7 @@ export default function EchoVision2D({
         width={HALL.width * 0.6}
         height={
           stage_area?.width_m
-            ? ((stage_area.width_m / dimensions.width_m) * HALL.height) / 3
+            ? ((stage_area.width_m / dimensions.length_m) * HALL.height) / 2
             : 40
         }
         fill="#333"

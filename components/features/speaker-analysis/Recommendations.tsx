@@ -1,5 +1,5 @@
-import clsx from "clsx";
 import { CriticalIssue, RecommendedFix } from "@/types/speaker";
+import clsx from "clsx";
 
 interface RecommendationsProps {
   room?: string;

@@ -1,4 +1,5 @@
 "use client";
+import Link from "next/link";
 import { useState } from "react";
 
 // Types
@@ -8,7 +9,6 @@ import { Dimensions, SpeakerPosition, StageData } from "@/types/speaker";
 import EchoVision2D from "@/views/2D/EchoVision2D";
 import EchoVision3D from "@/views/3D/EchoVision3D";
 import EchoVisionVr from "@/views/VR/EchoVisionVr";
-import Link from "next/link";
 
 type Props = {
   dimensions?: Dimensions;
@@ -116,14 +116,15 @@ export default function Tabs({
 
           {activeTab === "vr" && (
             <div className="animate-fadeIn">
-              <h2 className="text-2xl font-bold mb-4 text-white">
+              <h2 className="text-2xl font-bold mb-4 text-white text-center">
                 VR Placement View
               </h2>
-              <p className="text-whute mb-6">
+              <p className="text-white mb-6 flex flex-col">
                 Experience immersive virtual reality placement with VR headset
                 support.
                 <span className="text-sm text-center text-gray-400 italic font-ubuntu">
-                  Please see requirements for VR in <Link href="">Docs</Link>
+                  Please see requirements for VR in{" "}
+                  <Link href="/docs">Docs</Link>
                 </span>
               </p>
               <div className="aspect-video bg-linear-to-br from-purple-100 to-pink-50 rounded border border-gray-300 flex items-center justify-center">
@@ -141,15 +142,15 @@ export default function Tabs({
 
           {activeTab === "ar" && (
             <div className="animate-fadeIn">
-              <h2 className="text-2xl font-bold mb-4 text-white">
+              <h2 className="text-2xl font-bold mb-4 text-white text-center">
                 AR Placement View
               </h2>
-              <p className="text-whute mb-6">
+              <p className="text-whute mb-6 text-center">
                 Visualize objects in your real environment using augmented
                 reality.
               </p>
               <div className="aspect-video bg-linear-to-br from-green-100 to-cyan-50 rounded border border-gray-300 flex items-center justify-center">
-                <span className="text-gray-400">AR View Coming Soon</span>
+                <span className="text-gray-400">AR View Coming Soon...</span>
               </div>
             </div>
           )}

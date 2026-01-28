@@ -18,9 +18,9 @@ export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
     null,
   ]);
   const [displayError, setDisplayError] = useState<string | null>(null);
-  const [isClicked, setIsClicked] = useState(false);
   const IMAGE_ROLES = ["stage", "left", "right", "back/ceiling"] as const;
 
+  // Handle Image Upload
   const handleImageUpload = (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number,
@@ -41,8 +41,14 @@ export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
 
     reader.readAsDataURL(file);
   };
+
+  // Post Request and Error Message for Images Less than 4
   const handleAnalyze = () => {
-    onAnalyze?.(selectedImages);
+    if (selectedImages.filter(Boolean).length < 4) {
+      setDisplayError("Please Upload up to 4 Images");
+    } else {
+      onAnalyze?.(selectedImages);
+    }
   };
 
   return (
@@ -105,6 +111,11 @@ export default function UploadForm({ onAnalyze, loading }: UploadFormProps) {
         ))}
       </div>
 
+      {selectedImages.filter(Boolean).length < 4 && (
+        <div className="flex justify-center m-2">
+          <p className="text-sm text-red-600">{displayError}</p>
+        </div>
+      )}
       <div className="flex justify-center">
         <button
           className="button"

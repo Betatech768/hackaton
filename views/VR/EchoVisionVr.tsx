@@ -78,7 +78,7 @@ export default function EchoVision3D({
     <>
       {/* 3. Replacement for VRButton */}
       <button
-        className="fixed top-4 right-4 z-50 px-4 py-2 bg-white text-black rounded-md"
+        className="fixed top-4 right-4 z-50 px-4 py-2 bg-white text-black rounded-md cursor-pointer"
         onClick={() => store.enterVR()}
       >
         {isVR ? "Exit VR" : "START VR EXPERIENCE"}
