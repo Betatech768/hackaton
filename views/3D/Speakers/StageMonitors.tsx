@@ -7,7 +7,7 @@ Title: Monitor Speaker
 */
 
 import * as THREE from "three";
-import React, { JSX, useRef } from "react";
+import { JSX } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 

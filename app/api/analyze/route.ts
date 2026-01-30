@@ -2,7 +2,7 @@ import { NextResponse, NextRequest } from "next/server";
 import { GoogleGenerativeAI, SchemaType, Schema } from "@google/generative-ai";
 import { AnalysisResult } from "@/types/speaker";
 
-// Updated Gemini API Schema
+// Gemini API Schema
 const speakerAnalysisSchema = {
   type: SchemaType.OBJECT,
   properties: {
@@ -16,6 +16,7 @@ const speakerAnalysisSchema = {
       properties: {
         length_m: { type: SchemaType.NUMBER },
         width_m: { type: SchemaType.NUMBER },
+        height_m: { type: SchemaType.NUMBER },
         stage_position: {
           type: SchemaType.OBJECT,
           properties: {
@@ -342,6 +343,7 @@ export async function POST(request: NextRequest) {
       - All coordinates MUST be relative to the hall dimensions
       - Ensure that Subwoofers, Monitors, and Fill must be relative to the stage size and positon
       - Enusre that Subwoofers position is not under the stage.
+      - Ensure that Monitors and Front Fills are relative to stage area height 
 
       COORDINATE SYSTEM:
       - Origin (0,0,0) = front-left floor corner of the hall

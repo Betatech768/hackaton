@@ -6,11 +6,11 @@ type Props = {
 };
 
 export default function StageArea({ stage, dimensions }: Props) {
-  const STAGE_HEIGHT = 0.9;
+  const STAGE_HEIGHT = 0.6;
   if (!stage) return null;
   if (!dimensions) return null;
   // const { length_m } = dimensions || {};
-  const { width_m, length_m, stage_position } = stage;
+  const { height_m, width_m, length_m, stage_position } = stage;
 
   return (
     <mesh
@@ -22,7 +22,7 @@ export default function StageArea({ stage, dimensions }: Props) {
       receiveShadow
       castShadow
     >
-      <boxGeometry args={[width_m, STAGE_HEIGHT, length_m]} />
+      <boxGeometry args={[width_m, height_m, length_m]} />
       <meshStandardMaterial color="pink" />
     </mesh>
   );

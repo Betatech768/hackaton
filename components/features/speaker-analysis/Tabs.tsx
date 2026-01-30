@@ -119,7 +119,7 @@ export default function Tabs({
               <h2 className="text-2xl font-bold mb-4 text-white text-center">
                 VR Placement View
               </h2>
-              <p className="text-white mb-6 flex flex-col">
+              <p className="text-white mb-6 flex flex-col text-center">
                 Experience immersive virtual reality placement with VR headset
                 support.
                 <span className="text-sm text-center text-gray-400 italic font-ubuntu">
@@ -127,8 +127,7 @@ export default function Tabs({
                   <Link href="/docs">Docs</Link>
                 </span>
               </p>
-              <div className="aspect-video bg-linear-to-br from-purple-100 to-pink-50 rounded border border-gray-300 flex items-center justify-center">
-                {/* Place three.js VR Output here */}
+              <div className="bg-linear-to-br from-purple-100 to-pink-50 rounded border border-gray-300">
                 <span className="text-gray-400">
                   <EchoVisionVr
                     dimensions={dimensions}

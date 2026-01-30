@@ -7,10 +7,11 @@ export default function Hero() {
 
       <p className="text-lg md:text-xl text-white/90">
         Instantly upload your hall photos and let{" "}
-        <span className="text-blue-400 font-semibold">Gemini AI</span> predict
+        <span className="text-blue-400 font-semibold">Gemini 3</span> predict
         the best speaker positions — in{" "}
         <span className="text-blue-400 font-semibold">2D</span>,{" "}
-        <span className="text-blue-400 font-semibold">3D</span>, VR & AR.
+        <span className="text-blue-400 font-semibold">3D</span>,{" "}
+        <span className="text-blue-400 font-semibold">VR</span> & AR.
       </p>
     </div>
   );

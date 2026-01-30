@@ -7,7 +7,7 @@ Title: Lowpoly audio speaker
 */
 
 import * as THREE from "three";
-import React, { useRef, JSX } from "react";
+import { JSX } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
@@ -28,7 +28,7 @@ export default function DelaySpeaker(props: JSX.IntrinsicElements["group"]) {
     <group {...props} dispose={null}>
       <group>
         <group
-          rotation={[-Math.PI / 2, 0, 0]}
+          rotation={[-Math.PI / 2, 0, -Math.PI / 2]}
           userData={{ name: "Sketchfab_model" }}
         >
           <group

@@ -3,6 +3,7 @@ import StageMonitor from "./Speakers/StageMonitors";
 import Subwoofer from "./Speakers/Subwoofers";
 import LineArray from "./Speakers/LineArrays";
 import DelaySpeaker from "./Speakers/DelaySpeakers";
+import ColumnSpeaker from "./Speakers/ColumnSpeaker";
 
 const speakersArray = {
   fill: FrontFill,
@@ -10,6 +11,7 @@ const speakersArray = {
   monitor: StageMonitor,
   main: LineArray,
   delay: DelaySpeaker,
+  column: ColumnSpeaker,
 } as const;
 
 type SpeakerType = keyof typeof speakersArray;

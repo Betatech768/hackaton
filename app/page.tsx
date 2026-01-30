@@ -23,7 +23,6 @@ export default function EchoVision() {
   );
   const handleAnalyzeHall = async (images: (HallImage | null)[]) => {
     const imagesToSend = images.filter(Boolean);
-    console.log("Images to send for analysis:", imagesToSend);
 
     if (imagesToSend.length === 0) return;
     setLoading(true);

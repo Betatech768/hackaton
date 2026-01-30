@@ -8,6 +8,7 @@ import { SpeakerPosition, Dimensions, StageData } from "@/types/speaker";
 import Hall from "./components/Hall";
 import Speaker3D from "./components/Speaker3D";
 import StageArea from "./components/Stage";
+import DelaySpeaker from "./Speakers/DelaySpeakers";
 
 type Props = {
   dimensions?: Dimensions;

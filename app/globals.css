@@ -48,6 +48,7 @@ body {
 
   border: none;
   border-radius: var(--border_radius);
+  background-color: var(--black-700);
 
   transition: transform var(--transtion);
 }
@@ -110,6 +111,12 @@ body {
 
   mask: linear-gradient(transparent 0%, white 120%);
   animation: rotate 2s linear infinite;
+}
+.button:disabled {
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  border: 1px solid #999999;
 }
 
 @keyframes rotate {

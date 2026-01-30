@@ -7,7 +7,7 @@ Title: PA concert speaker - clean
 */
 
 import * as THREE from "three";
-import { useRef, JSX } from "react";
+import { JSX } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 

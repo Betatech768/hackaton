@@ -34,7 +34,7 @@ export default function Speaker3D({ speaker }: Props) {
     <group
       position={[speaker.x, speaker.y, speaker.z]}
       rotation={[
-        THREE.MathUtils.degToRad(speaker.angle_vertical ?? 0),
+        THREE.MathUtils.degToRad(-(speaker.angle_vertical ?? 0)),
         THREE.MathUtils.degToRad(speaker.angle_horizontal ?? 0),
         0,
       ]}
@@ -45,7 +45,7 @@ export default function Speaker3D({ speaker }: Props) {
       {/* Invisible hitbox for hover */}
       <mesh onPointerOver={handlePointerOver} onPointerOut={handlePointerOut}>
         <boxGeometry args={[1, 2, 1]} />
-        <meshBasicMaterial
+        <meshStandardMaterial
           transparent
           opacity={0}
           depthWrite={false}

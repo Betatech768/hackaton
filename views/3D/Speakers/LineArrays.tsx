@@ -7,7 +7,7 @@ Title: Line Array
 */
 
 import * as THREE from "three";
-import React, { useRef, JSX } from "react";
+import { JSX } from "react";
 import { useGLTF } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
@@ -57,7 +57,7 @@ export default function LineArray(props: JSX.IntrinsicElements["group"]) {
     "/linearray/models/scene.gltf",
   ) as unknown as GLTFResult;
   return (
-    <group {...props} dispose={null} scale={0.04}>
+    <group {...props} dispose={null} scale={0.03}>
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, 0]}>
           <group name="Collada_visual_scene_group">

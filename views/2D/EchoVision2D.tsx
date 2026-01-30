@@ -22,6 +22,7 @@ const SPEAKER_COLORS: Record<string, string> = {
   delay: "#facc15",
   fill: "#22c55e",
   monitor: "#f97316",
+  column: "red",
 };
 
 export default function EchoVision2D({

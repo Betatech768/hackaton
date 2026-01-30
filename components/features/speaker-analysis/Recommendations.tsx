@@ -1,3 +1,7 @@
+"use client";
+// Next import
+import { useRouter } from "next/navigation";
+// Types
 import { CriticalIssue, RecommendedFix } from "@/types/speaker";
 import clsx from "clsx";
 
@@ -15,6 +19,8 @@ export default function Recommendations({
   recommendedFixes,
   totalEstimatedCost,
 }: RecommendationsProps) {
+  const router = useRouter();
+
   // looping through criticalIssues to display them
   const severityClass: Record<"Critical" | "Warning" | "Minor", string> = {
     Critical: "bg-red-900/30 border-red-500",
@@ -115,6 +121,13 @@ export default function Recommendations({
           Estimated Cost to Fix Issues: {totalEstimatedCost} USD
         </div>
       </section>
+
+      <button
+        className="cursor-pointer p-4 pt-4 mt-2 bg-white rounded-xl text-black hover:bg-red-900 hover:text-white  transition-all font-ubuntu"
+        onClick={() => window.location.reload()}
+      >
+        Upload New Images
+      </button>
     </>
   );
 }
