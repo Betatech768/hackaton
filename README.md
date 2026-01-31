@@ -24,7 +24,7 @@ EchoVision is designed for people who work with sound, not against them.
 Clone the repository and install the dependencies:
 
 ```bash
-git clone ([https://github.com/your-username/echovision.git](https://github.com/Betatech768/hackaton.git))
+git clone ([https://github.com/Betatech768/hackaton.git](https://github.com/Betatech768/hackaton.git))
 cd hackaton
 npm install
 
