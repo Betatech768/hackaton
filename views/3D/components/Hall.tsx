@@ -3,6 +3,7 @@ import * as THREE from "three";
 
 // Types
 import { Dimensions } from "@/types/speaker";
+import { Environment } from "@react-three/drei";
 
 type Props = {
   dimensions?: Dimensions;
@@ -28,6 +29,7 @@ export default function Hall({ dimensions }: Props) {
     <group position={[width_m / 2, height_m / 2, length_m / 2]}>
       {/* INSIDE faces only */}
       <mesh geometry={boxGeometry}>
+        <Environment files={"/Hdr/warehouse-256.hdr"} />
         <meshStandardMaterial
           color="brown"
           transparent

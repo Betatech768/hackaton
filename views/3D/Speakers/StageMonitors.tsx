@@ -8,7 +8,7 @@ Title: Monitor Speaker
 
 import * as THREE from "three";
 import { JSX } from "react";
-import { useGLTF } from "@react-three/drei";
+import { useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
 type GLTFResult = GLTF & {
@@ -25,10 +25,15 @@ export default function StageMonitor(props: JSX.IntrinsicElements["group"]) {
     "/stagemonitor/models/scene.gltf",
   ) as unknown as GLTFResult;
 
+  //This Loads textures directly here
+  const [colorMap, mrMap, normalMap] = useTexture([
+    "/stagemonitor/models/textures/lambert2_baseColor.png",
+    "/stagemonitor/models/textures/lambert2_metallicRoughness.png",
+    "/stagemonitor/models/textures/lambert2_normal.png",
+  ]);
+
   return (
     <group {...props} dispose={null} scale={10}>
-      {" "}
-      {/* Add temporary large scale */}
       <group name="Sketchfab_Scene">
         <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, Math.PI]}>
           <group
@@ -43,8 +48,17 @@ export default function StageMonitor(props: JSX.IntrinsicElements["group"]) {
                   castShadow
                   receiveShadow
                   geometry={nodes.monitor_speaker_lp_lambert2_0.geometry}
-                  material={materials.lambert2}
-                />
+                >
+                  <meshStandardMaterial
+                    map={colorMap}
+                    normalMap={normalMap}
+                    metalnessMap={mrMap}
+                    roughnessMap={mrMap}
+                    emissive="#000000"
+                    roughness={1}
+                    metalness={1}
+                  />
+                </mesh>
               </group>
             </group>
           </group>
