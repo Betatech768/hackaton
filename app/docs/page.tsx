@@ -1,7 +1,4 @@
-import Link from "next/link";
-import React from "react";
-
-function Docs() {
+export default function Docs() {
   return (
     <>
       <article className="max-w-4xl mx-auto p-6 text-white leading-relaxed mt-50 mb-50">
@@ -206,5 +203,3 @@ function Docs() {
     </>
   );
 }
-
-export default Docs;
