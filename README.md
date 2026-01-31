@@ -27,6 +27,7 @@ Clone the repository and install the dependencies:
 git clone ([https://github.com/Betatech768/hackaton.git](https://github.com/Betatech768/hackaton.git))
 cd hackaton
 npm install
+```
 
 ## Core Concept
 
@@ -186,4 +187,7 @@ By combining Gemini’s reasoning with spatial visualization, it allows users to
 ה
 
 ---
+
+```
+
 ```
