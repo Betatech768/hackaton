@@ -22,8 +22,9 @@ const montserrat = Montserrat({
 });
 
 export const metadata: Metadata = {
-  title: "EchoVision AI",
-  description: "EchoVision AI",
+  title: "EchoVision",
+  description:
+    "EchoVision is a Gemini-powered acoustic visualization tool that converts spatial data into 2D, 3D, and VR views, enabling smarter analysis, clearer decisions, and better sound design for real spaces.",
 };
 
 export default function RootLayout({

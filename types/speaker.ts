@@ -16,7 +16,14 @@ export interface SpeakerRecommendation {
   reasoning: string; // Why this type is or isn't needed
   positions?: SpeakerPosition[]; // Only populated if required=true
 }
-
+export interface SeatingAreaProps {
+  length_m: number;
+  width_m: number;
+  seating_capacity: number;
+  layout_type?: string;
+  floor_to_stage_distance_m?: number;
+  is_tiered?: boolean;
+}
 export interface Dimensions {
   width_m: number;
   length_m: number;
@@ -56,7 +63,7 @@ export interface AnalysisResult {
 
   // All speaker positions (flattened from recommendations)
   all_speaker_positions: SpeakerPosition[];
-
+  seating_area: SeatingAreaProps;
   placement_views: PlacementView[];
   critical_issues: CriticalIssue[]; // Can be empty array
   recommended_fixes: RecommendedFix[]; // Can be empty array

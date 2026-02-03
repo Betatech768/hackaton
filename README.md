@@ -46,7 +46,7 @@ The goal is simple: **see sound before it fails**.
 
 ### 1. Image Input
 
-Users upload images of the space, typically including:
+Users upload 4 images of the space, typically including:
 
 - Stage view
 - Left side

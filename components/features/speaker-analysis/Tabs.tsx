@@ -3,7 +3,12 @@ import Link from "next/link";
 import { useState } from "react";
 
 // Types
-import { Dimensions, SpeakerPosition, StageData } from "@/types/speaker";
+import {
+  Dimensions,
+  SeatingAreaProps,
+  SpeakerPosition,
+  StageData,
+} from "@/types/speaker";
 
 // components
 import EchoVision2D from "@/views/2D/EchoVision2D";
@@ -14,12 +19,14 @@ type Props = {
   dimensions?: Dimensions;
   speakerPosition?: SpeakerPosition[];
   stage_area?: StageData;
+  seating_area: SeatingAreaProps;
 };
 
 export default function Tabs({
   dimensions,
   speakerPosition,
   stage_area,
+  seating_area,
 }: Props) {
   const [activeTab, setActiveTab] = useState("2d");
 
@@ -86,6 +93,7 @@ export default function Tabs({
                     dimensions={dimensions}
                     speakerPosition={speakerPosition}
                     stage_area={stage_area}
+                    seating_area={seating_area}
                   />
                 </div>
               </div>
@@ -109,6 +117,7 @@ export default function Tabs({
                   dimensions={dimensions}
                   speakers={speakerPosition}
                   stage_area={stage_area}
+                  seating_area={seating_area}
                 />
               </div>
             </div>
@@ -133,6 +142,7 @@ export default function Tabs({
                     dimensions={dimensions}
                     speakers={speakerPosition}
                     stage_area={stage_area}
+                    seating_area={seating_area}
                   />
                 </span>
               </div>

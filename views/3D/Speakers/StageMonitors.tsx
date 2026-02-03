@@ -7,7 +7,7 @@ Title: Monitor Speaker
 */
 
 import * as THREE from "three";
-import { JSX } from "react";
+import { JSX, useLayoutEffect } from "react";
 import { useGLTF, useTexture } from "@react-three/drei";
 import { GLTF } from "three-stdlib";
 
@@ -21,51 +21,47 @@ type GLTFResult = GLTF & {
 };
 
 export default function StageMonitor(props: JSX.IntrinsicElements["group"]) {
-  const { nodes, materials } = useGLTF(
+  const { nodes } = useGLTF(
     "/stagemonitor/models/scene.gltf",
   ) as unknown as GLTFResult;
-
-  //This Loads textures directly here
   const [colorMap, mrMap, normalMap] = useTexture([
     "/stagemonitor/models/textures/lambert2_baseColor.png",
     "/stagemonitor/models/textures/lambert2_metallicRoughness.png",
     "/stagemonitor/models/textures/lambert2_normal.png",
   ]);
 
+  useLayoutEffect(() => {
+    [colorMap, mrMap, normalMap].forEach((t) => (t.flipY = false));
+    colorMap.colorSpace = THREE.SRGBColorSpace;
+  }, [colorMap, mrMap, normalMap]);
+
   return (
-    <group {...props} dispose={null} scale={10}>
-      <group name="Sketchfab_Scene">
-        <group name="Sketchfab_model" rotation={[-Math.PI / 2, 0, Math.PI]}>
-          <group
-            name="monitor_speakerfbx"
-            rotation={[Math.PI / 2, 0, 0]}
-            scale={0.145}
-          >
-            <group name="RootNode">
-              <group name="monitor_speaker_lp" scale={0.394}>
-                <mesh
-                  name="monitor_speaker_lp_lambert2_0"
-                  castShadow
-                  receiveShadow
-                  geometry={nodes.monitor_speaker_lp_lambert2_0.geometry}
-                >
-                  <meshStandardMaterial
-                    map={colorMap}
-                    normalMap={normalMap}
-                    metalnessMap={mrMap}
-                    roughnessMap={mrMap}
-                    emissive="#000000"
-                    roughness={1}
-                    metalness={1}
-                  />
-                </mesh>
-              </group>
-            </group>
-          </group>
-        </group>
-      </group>
+    <group {...props} dispose={null} scale={15}>
+      {/* 1. Keep the outer group for your custom position/scale 
+        2. Rotate the mesh directly to face the performers
+      */}
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={nodes.monitor_speaker_lp_lambert2_0.geometry}
+        /* ADJUST THESE THREE NUMBERS:
+           X: Controls pitch (tilting up/down)
+           Y: Controls yaw (turning left/right)
+           Z: Controls roll
+        */
+        rotation={[-Math.PI / 4, 0, 0]}
+        scale={0.05} // Adjusted scale to be more manageable
+      >
+        <meshStandardMaterial
+          map={colorMap}
+          normalMap={normalMap}
+          metalnessMap={mrMap}
+          roughnessMap={mrMap}
+          metalness={1}
+          roughness={1}
+        />
+      </mesh>
     </group>
   );
 }
-
 useGLTF.preload("/stagemonitor/models/scene.gltf");

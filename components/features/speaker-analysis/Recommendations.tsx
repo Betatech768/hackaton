@@ -11,6 +11,7 @@ interface RecommendationsProps {
   criticalIssues?: CriticalIssue[];
   recommendedFixes?: RecommendedFix[];
   totalEstimatedCost?: number;
+  seating_cap?: number;
 }
 export default function Recommendations({
   room,
@@ -18,9 +19,8 @@ export default function Recommendations({
   criticalIssues,
   recommendedFixes,
   totalEstimatedCost,
+  seating_cap,
 }: RecommendationsProps) {
-  const router = useRouter();
-
   // looping through criticalIssues to display them
   const severityClass: Record<"Critical" | "Warning" | "Minor", string> = {
     Critical: "bg-red-900/30 border-red-500",
@@ -97,8 +97,14 @@ export default function Recommendations({
   return (
     <>
       <section className="mt-6 bg-zinc-800/50 backdrop-blur-sm rounded-2xl max-w-4xl w-full">
-        <div className="text-3xl font-ubuntu items-center justify-center text-white mb-4 text-center p-6 m-6">
+        <div className="text-3xl font-ubuntu items-center justify-center text-white mb-4 text-center p-6 m-6  flex flex-col">
           Type of Room: {room}
+          <span className="text-sm text-zinc-400 mt-2">
+            Room estimated seating capacity: {seating_cap} People
+          </span>
+        </div>
+        <div className="text-3xl font-ubuntu items-center justify-center text-white mb-4 text-center p-6 m-6">
+          Hall Issues Found
         </div>
         <div>{displayIssue}</div>
       </section>

@@ -2,7 +2,12 @@
 import { useMemo } from "react";
 
 // Types
-import { Dimensions, SpeakerPosition, StageData } from "@/types/speaker";
+import {
+  Dimensions,
+  SeatingAreaProps,
+  SpeakerPosition,
+  StageData,
+} from "@/types/speaker";
 
 // components
 import CoverageCone from "./CoverageCone";
@@ -14,6 +19,7 @@ type Props = {
   dimensions?: Dimensions;
   speakerPosition?: SpeakerPosition[];
   stage_area?: StageData;
+  seating_area?: SeatingAreaProps;
 };
 
 const SPEAKER_COLORS: Record<string, string> = {
@@ -29,8 +35,10 @@ export default function EchoVision2D({
   dimensions,
   speakerPosition,
   stage_area,
+  seating_area,
 }: Props) {
   if (!dimensions) return null;
+  if (!stage_area) return null;
 
   const svgSpeakers = mapSpeakersToSvg(speakerPosition ?? [], dimensions);
 
@@ -89,7 +97,7 @@ export default function EchoVision2D({
         y={212}
         textAnchor="middle"
         fill="white"
-        fontSize={18}
+        fontSize={25}
       >
         STAGE
       </text>
@@ -97,11 +105,11 @@ export default function EchoVision2D({
       <g clipPath="url(#hall-clip)">
         {sortedSpeakers.map((sp, i) => {
           const color = SPEAKER_COLORS[sp.type] || "#fff";
-
+          console.log(sp.type, sp.angle_horizontal);
           return (
             <g
               key={i}
-              transform={`translate(${sp.cx}, ${sp.cy}) rotate(${sp.angle_horizontal ?? 0})`}
+              transform={`translate(${sp.cx}, ${sp.cy}) rotate(${sp.type === "monitor" && (sp.angle_horizontal ?? 0) < 180 ? 180 : (sp.angle_horizontal ?? 0)})`}
             >
               {/* Coverage */}
               {sp.type !== "subwoofer" && <CoverageCone color={color} />}
@@ -136,6 +144,31 @@ export default function EchoVision2D({
           );
         })}
       </g>
+
+      {/* ===== SEATING AREA ===== */}
+      <rect
+        x={HALL.x}
+        y={VIEWBOX_HEIGHT * 0.3}
+        width={HALL.width}
+        height={
+          seating_area?.length_m
+            ? (seating_area?.length_m / dimensions.length_m) * HALL.height
+            : 40
+        }
+        fill="#FF0000"
+        opacity={0.1}
+      />
+
+      {/* ===== TEXT ===== */}
+      <text
+        x={HALL.x + HALL.width / 2}
+        y={VIEWBOX_HEIGHT * 0.6}
+        textAnchor="middle"
+        fill="white"
+        fontSize={25}
+      >
+        SEATING AREA WITH {seating_area?.seating_capacity} SEATING CAPACITY
+      </text>
       {/* ===== LEGEND ===== */}
       <g transform="translate(20, 420)">
         <text fill="white" fontSize={32} fontWeight="bold">

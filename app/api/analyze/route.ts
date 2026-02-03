@@ -29,6 +29,33 @@ const speakerAnalysisSchema = {
       description: "Area of the stage in square meters",
       required: ["length_m", "width_m"],
     },
+
+    seating_area: {
+      type: SchemaType.OBJECT,
+      properties: {
+        length_m: { type: SchemaType.NUMBER },
+        width_m: { type: SchemaType.NUMBER },
+        seating_capacity: {
+          type: SchemaType.NUMBER,
+          description: "Total number of people the area can accommodate",
+        },
+        layout_type: {
+          type: SchemaType.STRING,
+          description: "e.g., Theater, Banquet, Classroom, or Standing",
+        },
+        floor_to_stage_distance_m: {
+          type: SchemaType.NUMBER,
+          description: "Distance from the front of the seating to the stage",
+        },
+        is_tiered: {
+          type: SchemaType.BOOLEAN,
+          description: "Whether the seating is sloped/stadium style",
+        },
+      },
+      description: "Dimensions and capacity of the audience area",
+      required: ["length_m", "width_m", "seating_capacity"],
+    },
+
     dimensions: {
       type: SchemaType.OBJECT,
       properties: {
@@ -240,27 +267,6 @@ const speakerAnalysisSchema = {
       },
     },
 
-    sitting_area: {
-      type: SchemaType.OBJECT,
-      properties: {
-        position: {
-          type: SchemaType.OBJECT,
-          properties: {
-            x_m: { type: SchemaType.NUMBER },
-            y_m: { type: SchemaType.NUMBER },
-            z_m: { type: SchemaType.NUMBER },
-          },
-        },
-        dimensions: {
-          type: SchemaType.OBJECT,
-          properties: {
-            length: { type: SchemaType.NUMBER },
-            width: { type: SchemaType.NUMBER },
-          },
-        },
-      },
-    },
-
     total_estimated_cost_usd: {
       type: SchemaType.NUMBER,
       description:
@@ -305,7 +311,7 @@ const speakerAnalysisSchema = {
     "analysis_summary",
     "stage_area",
     "room_status",
-    "sitting_area",
+    "seating_area",
   ],
 } satisfies Schema;
 
@@ -342,9 +348,18 @@ export async function POST(request: NextRequest) {
       - All units MUST be in meters
       - All coordinates MUST be relative to the hall dimensions
       - Ensure that Subwoofers, Monitors, and Fill must be relative to the stage size and positon
-      - Enusre that Subwoofers position is not under the stage.
-      - Ensure that Monitors and Front Fills are relative to stage area height 
-
+      - Subwoofers MUST NOT be placed under the stage. Position them at y > (stage.y + stage.depth).
+      - Monitors and Front Fills must have a z value equal to stage.height.
+      - The room percentage score MUST be a string in the format "XX%" (e.g., "70%"). Never use fractions like "70/100".
+      - Never stack the "Main" speakers on top of one another.
+      - Monitors must never be placed in front of Front Fills.
+      - The seating area coordinates must be positioned relative to the stage front and remain within hall boundaries.
+      
+      COMPONENT LOGIC (The "Anti-Stacking" Fix):
+        - Main Arrays: Each "main" must be a SINGLE entry in the array representing the top-most hang point.
+        - No Element Listing: Do NOT list individual elements of a line array (e.g., Top, Mid, Bottom). Gemini must calculate the optimal single position for the entire array hang.
+        - Subwoofers: If multiple subwoofers are needed, they must have unique [x, y] coordinates. Do NOT stack them on top of each other at the same coordinate.
+      
       COORDINATE SYSTEM:
       - Origin (0,0,0) = front-left floor corner of the hall
       - X axis → hall width (left to right)
@@ -357,9 +372,9 @@ export async function POST(request: NextRequest) {
       - Subwoofers MUST be on the floor
       - Line arrays MUST respect hall height
       - Speaker positions MUST NOT exceed hall bounds
-      - Sitting area must not exceed hall bounds
-      - Sitting area must respect stage position 
-      - Use realistic professional audio engineering assumptions for Sitting Area 
+      - Seating area must not exceed hall bounds
+      - Seating area must respect stage position 
+      - Use realistic professional audio engineering assumptions for Seating Area 
 
       Use realistic professional audio engineering assumptions
       when exact measurements are not visually available.

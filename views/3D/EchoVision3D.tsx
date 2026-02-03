@@ -4,14 +4,21 @@ import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Grid } from "@react-three/drei";
 import { Suspense, useRef, useMemo } from "react";
 
-import { SpeakerPosition, Dimensions, StageData } from "@/types/speaker";
+import {
+  SpeakerPosition,
+  Dimensions,
+  StageData,
+  SeatingAreaProps,
+} from "@/types/speaker";
 import Hall from "./components/Hall";
 import Speaker3D from "./components/Speaker3D";
 import StageArea from "./components/Stage";
+import { SeatingBlock } from "./components/SeatingArea";
 type Props = {
   dimensions?: Dimensions;
   speakers?: SpeakerPosition[];
   stage_area?: StageData;
+  seating_area?: SeatingAreaProps;
 };
 
 // --- 1. NEW COMPONENT TO HANDLE CONTROLS ---
@@ -59,9 +66,11 @@ export default function EchoVision3D({
   dimensions,
   speakers,
   stage_area,
+  seating_area,
 }: Props) {
   if (!dimensions) return null;
   if (!speakers) return null;
+  if (!seating_area) return null;
 
   const { length_m, width_m, height_m } = dimensions;
   const centerX = width_m / 2;
@@ -76,7 +85,7 @@ export default function EchoVision3D({
       return 0;
     });
   }, [speakers]);
-
+  console.log(sortedSpeakers);
   return (
     <Canvas
       camera={{
@@ -106,6 +115,13 @@ export default function EchoVision3D({
 
       <Suspense fallback={null}>
         <StageArea stage={stage_area} dimensions={dimensions} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <SeatingBlock
+          seating_area={seating_area}
+          dimensions={dimensions}
+          stage_area={stage_area}
+        />
       </Suspense>
 
       {sortedSpeakers.map((sp, i) => (

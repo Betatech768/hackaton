@@ -5,10 +5,16 @@ import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
 import { XR, createXRStore, useXR } from "@react-three/xr";
 import { Suspense, useMemo } from "react";
 
-import { SpeakerPosition, Dimensions, StageData } from "@/types/speaker";
+import {
+  SpeakerPosition,
+  Dimensions,
+  StageData,
+  SeatingAreaProps,
+} from "@/types/speaker";
 import Hall from "../3D/components/Hall";
 import StageArea from "../3D/components/Stage";
 import Speaker3D from "../3D/components/Speaker3D";
+import { SeatingBlock } from "../3D/components/SeatingArea";
 
 // 1. Initialize XR Store outside
 const store = createXRStore({
@@ -20,6 +26,7 @@ type Props = {
   dimensions?: Dimensions;
   speakers?: SpeakerPosition[];
   stage_area?: StageData;
+  seating_area: SeatingAreaProps;
 };
 
 // 2. Camera Controller logic
@@ -63,6 +70,7 @@ export default function EchoVision3D({
   dimensions,
   speakers,
   stage_area,
+  seating_area,
 }: Props) {
   const sortedSpeakers = useMemo(() => {
     if (!speakers) return [];
@@ -106,6 +114,13 @@ export default function EchoVision3D({
 
             <Suspense fallback={null}>
               <StageArea stage={stage_area} dimensions={dimensions} />
+            </Suspense>
+            <Suspense fallback={null}>
+              <SeatingBlock
+                seating_area={seating_area}
+                dimensions={dimensions}
+                stage_area={stage_area}
+              />
             </Suspense>
 
             {sortedSpeakers.map((sp, i) => (

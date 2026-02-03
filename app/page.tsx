@@ -21,11 +21,14 @@ export default function EchoVision() {
   const [analysisResult, setAnalysisResult] = useState(
     null as AnalysisResult | null,
   );
+  const [errorCode, setErrorCode] = useState<number | null>(null);
   const handleAnalyzeHall = async (images: (HallImage | null)[]) => {
     const imagesToSend = images.filter(Boolean);
 
     if (imagesToSend.length === 0) return;
+
     setLoading(true);
+    setErrorCode(null);
 
     // Calling Server Route
     try {
@@ -36,12 +39,18 @@ export default function EchoVision() {
         },
         body: JSON.stringify({ images: imagesToSend }),
       });
+
+      if (!res.ok) {
+        throw new Error(res.status.toString());
+      }
       const result = await res.json();
 
       console.log("Gemini Analysis Result:", result);
       setAnalysisResult(result);
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error analysis hall:", err);
+      const code = parseInt(err.message);
+      setErrorCode(isNaN(code) ? 500 : code);
     } finally {
       setLoading(false);
     }
@@ -54,11 +63,11 @@ export default function EchoVision() {
     room_type,
     room_status,
     stage_area,
-    analysis_summary,
     speaker_recommendations,
     all_speaker_positions,
-    placement_views,
     dimensions,
+    seating_capacity_estimate,
+    seating_area,
   } = analysisResult || {};
 
   const hallIssues = critical_issues?.map(
@@ -69,19 +78,24 @@ export default function EchoVision() {
       title,
     }),
   );
-
+  console.log(speaker_recommendations);
   return (
     <section className="flex flex-col items-center justify-center min-h-dvh p-5 font-poppins bg-[url('/heroImage.jpg')] bg-cover bg-no-repeat bg-center pt-60 pb-40">
       <Hero />
       <div className="flex flex-col mt-7 items-center justify-center">
         {!analysisResult && (
-          <UploadForm onAnalyze={handleAnalyzeHall} loading={loading} />
+          <UploadForm
+            onAnalyze={handleAnalyzeHall}
+            loading={loading}
+            statusCode={errorCode}
+          />
         )}
         {analysisResult && (
           <Tabs
             dimensions={dimensions}
             speakerPosition={all_speaker_positions}
             stage_area={stage_area}
+            seating_area={seating_area}
           />
         )}
       </div>
@@ -89,6 +103,7 @@ export default function EchoVision() {
       {analysisResult && (
         <Recommendations
           room={room_type}
+          seating_cap={seating_capacity_estimate}
           roomStatus={room_status}
           criticalIssues={hallIssues}
           recommendedFixes={recommended_fixes}
