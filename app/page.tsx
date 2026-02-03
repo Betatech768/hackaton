@@ -78,7 +78,6 @@ export default function EchoVision() {
       title,
     }),
   );
-  console.log(speaker_recommendations);
   return (
     <section className="flex flex-col items-center justify-center min-h-dvh p-5 font-poppins bg-[url('/heroImage.jpg')] bg-cover bg-no-repeat bg-center pt-60 pb-40">
       <Hero />
@@ -108,6 +107,7 @@ export default function EchoVision() {
           criticalIssues={hallIssues}
           recommendedFixes={recommended_fixes}
           totalEstimatedCost={total_estimated_cost_usd}
+          speakers={speaker_recommendations}
         />
       )}
     </section>

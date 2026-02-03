@@ -1,8 +1,10 @@
 "use client";
-// Next import
-import { useRouter } from "next/navigation";
 // Types
-import { CriticalIssue, RecommendedFix } from "@/types/speaker";
+import {
+  CriticalIssue,
+  RecommendedFix,
+  SpeakerRecommendation,
+} from "@/types/speaker";
 import clsx from "clsx";
 
 interface RecommendationsProps {
@@ -12,6 +14,7 @@ interface RecommendationsProps {
   recommendedFixes?: RecommendedFix[];
   totalEstimatedCost?: number;
   seating_cap?: number;
+  speakers?: SpeakerRecommendation[];
 }
 export default function Recommendations({
   room,
@@ -20,6 +23,7 @@ export default function Recommendations({
   recommendedFixes,
   totalEstimatedCost,
   seating_cap,
+  speakers,
 }: RecommendationsProps) {
   // looping through criticalIssues to display them
   const severityClass: Record<"Critical" | "Warning" | "Minor", string> = {
@@ -73,6 +77,36 @@ export default function Recommendations({
     </div>
   ));
 
+  // Speakers Recommendations
+  const SPEAKER_COLORS: Record<string, string> = {
+    main: "#ffffff",
+    subwoofer: "#3b82f6",
+    delay: "#facc15",
+    fill: "#22c55e",
+    monitor: "#f97316",
+    column: "red",
+  };
+  const recommendedSpeakers = speakers?.map((sp, index) => (
+    <div
+      key={index}
+      className={clsx(
+        "mt-6 p-6 bg-zinc-800/50 backdrop-blur-sm rounded-2xl max-w-4xl w-full border",
+        SPEAKER_COLORS[sp.speaker_type],
+      )}
+    >
+      <div className="font-semibold text-sm uppercase tracking-wide mb-2">
+        {sp.speaker_type}
+      </div>
+      <div className="text-white font-medium">
+        Required Quantity: {sp.quantity}
+      </div>
+      <p className="text-zinc-300 mt-1">
+        <span>Reasoning: </span>
+        {sp.reasoning}
+      </p>
+    </div>
+  ));
+
   // Recommended Fixes display
   const displayRecmmendedFixes = displayFixes?.map((fix, index) => (
     <div
@@ -103,6 +137,16 @@ export default function Recommendations({
             Room estimated seating capacity: {seating_cap} People
           </span>
         </div>
+      </section>
+      <section className="mt-6 bg-zinc-800/50 backdrop-blur-sm rounded-2xl max-w-4xl w-full">
+        <div className="text-3xl font-ubuntu items-center justify-center text-white mb-4 text-center p-6 m-6  flex flex-col">
+          Speaker Recommendations
+          <span className="text-sm text-zinc-400 mt-2">
+            {recommendedSpeakers}
+          </span>
+        </div>
+      </section>
+      <section className="mt-6 bg-zinc-800/50 backdrop-blur-sm rounded-2xl max-w-4xl w-full">
         <div className="text-3xl font-ubuntu items-center justify-center text-white mb-4 text-center p-6 m-6">
           Hall Issues Found
         </div>

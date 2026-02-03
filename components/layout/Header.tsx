@@ -1,6 +1,6 @@
 export default function Header() {
   return (
-    <section className="fixed top-0 right-0 left-0 z-50 bg-zinc-900/30 backdrop-blur-lg">
+    <section className="fixed top-0 right-0 left-0 z-50 bg-zinc-900/30 backdrop-blur-lg text-center">
       {/* Navbar area */}
       <nav className="flex flex-col justify-center items-center p-10">
         <p className="font-ubuntu text-5xl">EchoVision</p>

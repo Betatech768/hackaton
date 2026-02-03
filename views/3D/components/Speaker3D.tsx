@@ -35,8 +35,9 @@ export default function Speaker3D({ speaker }: Props) {
       position={[speaker.x, speaker.y, speaker.z]}
       rotation={[
         THREE.MathUtils.degToRad(-(speaker.angle_vertical ?? 0)),
-        THREE.MathUtils.degToRad(speaker.angle_horizontal ?? 0),
+        THREE.MathUtils.degToRad(-(speaker.angle_horizontal ?? 0)),
         0,
+        "YXZ",
       ]}
     >
       {/* Real speaker model */}
