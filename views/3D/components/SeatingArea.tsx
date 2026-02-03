@@ -92,7 +92,7 @@ export function SeatingBlock({ seating_area, dimensions, stage_area }: Props) {
         dimensions.width_m / 2,
         0,
         (dimensions.length_m - stage_area.length_m) *
-          (greaterNumber ? 0.55 : 0.2),
+          (greaterNumber ? 0.4 : 0.35),
       ]}
     >
       <instancedMesh ref={meshRef} args={[null!, null!, adjustedCapacity]}>

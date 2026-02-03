@@ -45,7 +45,6 @@ export default function EchoVision() {
       }
       const result = await res.json();
 
-      console.log("Gemini Analysis Result:", result);
       setAnalysisResult(result);
     } catch (err: any) {
       console.error("Error analysis hall:", err);

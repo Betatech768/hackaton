@@ -105,7 +105,6 @@ export default function EchoVision2D({
       <g clipPath="url(#hall-clip)">
         {sortedSpeakers.map((sp, i) => {
           const color = SPEAKER_COLORS[sp.type] || "#fff";
-          console.log(sp.type, sp.angle_horizontal);
           return (
             <g
               key={i}

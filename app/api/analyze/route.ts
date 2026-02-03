@@ -353,6 +353,7 @@ export async function POST(request: NextRequest) {
       - The room percentage score MUST be a string in the format "XX%" (e.g., "70%"). Never use fractions like "70/100".
       - Never stack the "Main" speakers on top of one another.
       - Monitors must never be placed in front of Front Fills.
+      - Monitors must back seating area.
       - The seating area coordinates must be positioned relative to the stage front and remain within hall boundaries.
       
       COMPONENT LOGIC (The "Anti-Stacking" Fix):

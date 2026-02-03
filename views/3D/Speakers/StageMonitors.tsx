@@ -49,7 +49,7 @@ export default function StageMonitor(props: JSX.IntrinsicElements["group"]) {
            Y: Controls yaw (turning left/right)
            Z: Controls roll
         */
-        rotation={[-Math.PI / 2, Math.PI, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
         scale={0.05} // Adjusted scale to be more manageable
       >
         <meshStandardMaterial

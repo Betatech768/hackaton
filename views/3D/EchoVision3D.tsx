@@ -1,19 +1,24 @@
 "use client";
 
+import { Suspense, useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Grid } from "@react-three/drei";
-import { Suspense, useRef, useMemo } from "react";
 
+// Types
 import {
   SpeakerPosition,
   Dimensions,
   StageData,
   SeatingAreaProps,
 } from "@/types/speaker";
+
+// components
 import Hall from "./components/Hall";
 import Speaker3D from "./components/Speaker3D";
 import StageArea from "./components/Stage";
 import { SeatingBlock } from "./components/SeatingArea";
+import NoSRR from "@/app/errorHandling/NoSRR";
+
 type Props = {
   dimensions?: Dimensions;
   speakers?: SpeakerPosition[];
@@ -85,50 +90,51 @@ export default function EchoVision3D({
       return 0;
     });
   }, [speakers]);
-  console.log(sortedSpeakers);
   return (
-    <Canvas
-      camera={{
-        position: [centerX, cameraHeight - 5, centerZ + length_m * 0.5],
-        fov: 50,
-        near: 0.1,
-        far: 200,
-      }}
-      className="brown rounded-xl"
-    >
-      <ambientLight intensity={0.6} />
-      <directionalLight position={[10, 20, 10]} intensity={1} />
+    <NoSRR>
+      <Canvas
+        camera={{
+          position: [centerX, cameraHeight - 5, centerZ + length_m * 0.5],
+          fov: 50,
+          near: 0.1,
+          far: 200,
+        }}
+        className="brown rounded-xl"
+      >
+        <ambientLight intensity={0.6} />
+        <directionalLight position={[10, 20, 10]} intensity={1} />
 
-      <Grid
-        args={[width_m, length_m]}
-        position={[width_m / 2, 0, length_m / 2]}
-      />
-
-      {/* Logic moved here to be inside the Canvas context */}
-      <CameraController
-        dimensions={dimensions}
-        centerX={centerX}
-        centerZ={centerZ}
-      />
-
-      <Hall dimensions={dimensions} />
-
-      <Suspense fallback={null}>
-        <StageArea stage={stage_area} dimensions={dimensions} />
-      </Suspense>
-      <Suspense fallback={null}>
-        <SeatingBlock
-          seating_area={seating_area}
-          dimensions={dimensions}
-          stage_area={stage_area}
+        <Grid
+          args={[width_m, length_m]}
+          position={[width_m / 2, 0, length_m / 2]}
         />
-      </Suspense>
 
-      {sortedSpeakers.map((sp, i) => (
-        <Suspense fallback={null} key={i}>
-          <Speaker3D speaker={sp} />
+        {/* Logic moved here to be inside the Canvas context */}
+        <CameraController
+          dimensions={dimensions}
+          centerX={centerX}
+          centerZ={centerZ}
+        />
+
+        <Hall dimensions={dimensions} />
+
+        <Suspense fallback={null}>
+          <StageArea stage={stage_area} dimensions={dimensions} />
         </Suspense>
-      ))}
-    </Canvas>
+        <Suspense fallback={null}>
+          <SeatingBlock
+            seating_area={seating_area}
+            dimensions={dimensions}
+            stage_area={stage_area}
+          />
+        </Suspense>
+
+        {sortedSpeakers.map((sp, i) => (
+          <Suspense fallback={null} key={i}>
+            <Speaker3D speaker={sp} />
+          </Suspense>
+        ))}
+      </Canvas>
+    </NoSRR>
   );
 }
