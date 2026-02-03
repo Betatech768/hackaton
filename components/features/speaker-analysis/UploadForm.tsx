@@ -1,7 +1,9 @@
 "use client";
+import React, { useState } from "react";
 import NoSRR from "@/app/errorHandling/NoSRR";
 import StatusAlert from "@/app/errorHandling/StatusAlert";
-import React, { useState } from "react";
+import { resolve } from "path";
+import { rejects } from "assert";
 
 type UploadFormProps = {
   onAnalyze?: (images: (HallImage | null)[]) => void;
@@ -27,26 +29,57 @@ export default function UploadForm({
   const [displayError, setDisplayError] = useState<string | null>(null);
   const IMAGE_ROLES = ["stage", "left", "right", "back/ceiling"] as const;
 
+  /**
+   * Helper: Converts any image (AVIF, PNG, etc.) to a WebP DataURL
+   * This solves the Gemini AVIF compatibility issue.
+   */
+
+  const proccessToWebP = async (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const img = new Image();
+      img.src = URL.createObjectURL(file);
+
+      img.onload = () => {
+        const canvas = document.createElement("canvas");
+        // Maintain aspect ration but cap resolution at 2048px
+        const scale = Math.min(1, 2048 / Math.max(img.width, img.height));
+        canvas.width = img.width * scale;
+        canvas.height = img.height * scale;
+
+        const ctx = canvas.getContext("2d");
+        ctx?.drawImage(img, 0, 0, canvas.width, canvas.height);
+        const dataUrl = canvas.toDataURL("image/webp", 0.8);
+        URL.revokeObjectURL(img.src);
+        resolve(dataUrl);
+      };
+      img.onerror = () => reject("Failed to process image Format");
+    });
+  };
+
   // Handle Image Upload
-  const handleImageUpload = (
+  const handleImageUpload = async (
     e: React.ChangeEvent<HTMLInputElement>,
     index: number,
   ) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    const reader = new FileReader();
-    reader.onloadend = () => {
+    try {
+      const webpDataUrl = await proccessToWebP(file);
       setSelectedImages((prev) => {
         const updated = [...prev];
         updated[index] = {
           role: IMAGE_ROLES[index],
-          dataUrl: reader.result as string,
+          dataUrl: webpDataUrl,
         };
         return updated;
       });
-    };
-
-    reader.readAsDataURL(file);
+      // clear error
+      setDisplayError(null);
+    } catch (err) {
+      setDisplayError(
+        "Could not process this image format. Try a JPEG or PNG.",
+      );
+    }
   };
 
   // Post Request and Error Message for Images Less than 4
@@ -66,8 +99,7 @@ export default function UploadForm({
         </h2>
 
         <p className="text-zinc-400 text-center mb-6">
-          Upload up to 4 images: Stage, Left, Right, Back, and Ceiling views in
-          JPEG, PNG, WEBP, or GIF format.
+          Upload up to 4 images: Stage, Left, Right, Back, and Ceiling views.
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
