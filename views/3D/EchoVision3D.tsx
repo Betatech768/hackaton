@@ -82,6 +82,12 @@ export default function EchoVision3D({
   const centerZ = length_m / 1.8;
   const cameraHeight = Math.min(height_m * 0.6, 12);
 
+  // calculate the area of the hall
+
+  const Area = length_m * width_m;
+
+  console.log(Area);
+
   // Sort speakers so Subwoofers render first (if applicable to 3D transparency/ordering)
   const sortedSpeakers = useMemo(() => {
     return [...speakers].sort((a, b) => {

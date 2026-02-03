@@ -354,8 +354,15 @@ export async function POST(request: NextRequest) {
       - Never stack the "Main" speakers on top of one another.
       - Monitors must never be placed in front of Front Fills.
       - Monitors must back seating area.
+      - Speaker Grounding: For any equipment placed on the stage (Monitors/Fills), the Z-coordinate must be stage.height + (speaker_half_height). Assume Monitor height is 0.4m and Fill height is 0.3m.
       - The seating area coordinates must be positioned relative to the stage front and remain within hall boundaries.
-      
+      - Dynamic Equipment Selection: If the hall area is < 60m², do NOT use Line Arrays (Mains). Instead, use "Point Source" speakers. Do NOT calculate for line array curvature or multiple elements.
+      - Ceiling Constraint: If hall height is < 4m, set all speaker vertical angles to 0° to avoid floor/ceiling phase cancellation.
+      - High-Frequency Aiming: The angle_vertical for Mains must be calculated to point at the center-point of the seating area depth, never at the floor or back wall directly.
+      - Obstruction Check: No speaker (Mains or Fills) may have a direct line-of-sight path blocked by the stage or other speakers.
+      - Subwoofer Symmetry: If multiple subwoofers are used, they must be placed symmetrically relative to the center-line of the hall (Mirror X-axis) unless the hall is asymmetrical.
+
+
       COMPONENT LOGIC (The "Anti-Stacking" Fix):
         - Main Arrays: Each "main" must be a SINGLE entry in the array representing the top-most hang point.
         - No Element Listing: Do NOT list individual elements of a line array (e.g., Top, Mid, Bottom). Gemini must calculate the optimal single position for the entire array hang.

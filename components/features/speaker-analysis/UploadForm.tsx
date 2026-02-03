@@ -2,8 +2,6 @@
 import React, { useState } from "react";
 import NoSRR from "@/app/errorHandling/NoSRR";
 import StatusAlert from "@/app/errorHandling/StatusAlert";
-import { resolve } from "path";
-import { rejects } from "assert";
 
 type UploadFormProps = {
   onAnalyze?: (images: (HallImage | null)[]) => void;
