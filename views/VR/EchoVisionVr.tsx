@@ -1,8 +1,7 @@
 "use client";
 
 import { Suspense, useMemo } from "react";
-import { Canvas } from "@react-three/fiber";
-import { useThree } from "@react-three/fiber";
+import { Canvas, useThree } from "@react-three/fiber";
 import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
 import { XR, createXRStore, useXR } from "@react-three/xr";
 
@@ -12,15 +11,15 @@ import {
   StageData,
   SeatingAreaProps,
 } from "@/types/speaker";
+
 import Hall from "../3D/components/Hall";
 import StageArea from "../3D/components/Stage";
 import Speaker3D from "../3D/components/Speaker3D";
 import { SeatingBlock } from "../3D/components/SeatingArea";
 
 /**
- * 1. Initialize XR Store
- * Removed 'layers' and 'dom-overlay' hints that cause
- * rejections in certain immersive-vr deployments.
+ * XR Store
+ * Keep minimal to avoid unsupported feature rejections
  */
 const store = createXRStore({
   hand: true,
@@ -35,9 +34,7 @@ type Props = {
 };
 
 /**
- * 2. Camera Controller logic
- * OrbitControls are disabled automatically when an active
- * XR session is detected to prevent input conflicts.
+ * Disable OrbitControls when XR is active
  */
 function CameraController({ dimensions, centerX, centerZ }: any) {
   const session = useXR((state) => state.session);
@@ -53,38 +50,47 @@ function CameraController({ dimensions, centerX, centerZ }: any) {
 }
 
 /**
- * 3. Visual Overlay (The Fix)
- * The function is no longer async. We trigger fullscreen as a
- * side effect, but store.enterVR() is called synchronously
- * to satisfy the browser's User Activation requirement.
+ * XR Session Controller
+ * MUST live inside <Canvas>
  */
-
-function VisualOverlay() {
+function XRSessionController() {
   const { gl } = useThree();
 
-  const handleStartVR = async () => {
-    // Optional fullscreen (do NOT await)
-    if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen().catch(() => {});
-    }
-
-    // WebXR support check
+  const startVR = async () => {
     if (!navigator.xr) {
-      console.warn("WebXR not supported on this device");
+      console.warn("WebXR not supported");
       return;
     }
 
     try {
-      // IMPORTANT: requestSession MUST happen directly in click handler
       const session = await navigator.xr.requestSession("immersive-vr", {
         optionalFeatures: ["local-floor", "bounded-floor"],
       });
 
-      // Attach session to Three.js renderer
       gl.xr.setSession(session);
     } catch (error) {
       console.error("Failed to start VR session:", error);
     }
+  };
+
+  // Bridge XR start to DOM UI safely
+  if (typeof window !== "undefined") {
+    (window as any).__ECHOVISION_START_VR__ = startVR;
+  }
+
+  return null;
+}
+
+/**
+ * DOM Overlay (NO R3F hooks here)
+ */
+function VisualOverlay() {
+  const handleStartVR = () => {
+    // Optional fullscreen (do not await)
+    document.documentElement.requestFullscreen?.().catch(() => {});
+
+    // Trigger XR session
+    (window as any).__ECHOVISION_START_VR__?.();
   };
 
   return (
@@ -122,7 +128,6 @@ export default function EchoVision3D({
       <VisualOverlay />
 
       <Canvas
-        style={{ height: "100%", width: "100%" }}
         shadows
         gl={{ antialias: true, alpha: false }}
         onCreated={({ gl }) => {
@@ -130,7 +135,9 @@ export default function EchoVision3D({
         }}
       >
         <XR store={store}>
-          {/* Shift the entire hall so the center point is at world 0,0,0 for VR comfort */}
+          <XRSessionController />
+
+          {/* Center hall at world origin for VR comfort */}
           <group position={[-centerX, 0, -centerZ]}>
             <ambientLight intensity={0.6} />
             <pointLight position={[10, 10, 10]} intensity={1.5} castShadow />
