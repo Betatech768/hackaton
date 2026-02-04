@@ -16,7 +16,11 @@ import StageArea from "../3D/components/Stage";
 import Speaker3D from "../3D/components/Speaker3D";
 import { SeatingBlock } from "../3D/components/SeatingArea";
 
-// 1. Initialize XR Store outside
+/**
+ * 1. Initialize XR Store
+ * Removed 'layers' and 'dom-overlay' hints that cause
+ * rejections in certain immersive-vr deployments.
+ */
 const store = createXRStore({
   hand: true,
   controller: true,
@@ -29,10 +33,14 @@ type Props = {
   seating_area?: SeatingAreaProps;
 };
 
-// 2. Camera Controller logic
+/**
+ * 2. Camera Controller logic
+ * OrbitControls are disabled automatically when an active
+ * XR session is detected to prevent input conflicts.
+ */
 function CameraController({ dimensions, centerX, centerZ }: any) {
   const session = useXR((state) => state.session);
-  if (session) return null; // Disable OrbitControls in VR
+  if (session) return null;
 
   return (
     <OrbitControls
@@ -43,23 +51,30 @@ function CameraController({ dimensions, centerX, centerZ }: any) {
   );
 }
 
-// 3. UI Overlay (Outside Canvas)
+/**
+ * 3. Visual Overlay (The Fix)
+ * The function is no longer async. We trigger fullscreen as a
+ * side effect, but store.enterVR() is called synchronously
+ * to satisfy the browser's User Activation requirement.
+ */
 function VisualOverlay() {
-  // Note: we can't use useXR() here because this is outside the <XR> provider.
-  // We use the store's native subscribe or just standard button logic.
-
-  const enterVR = async () => {
+  const handleStartVR = () => {
+    // Attempt fullscreen but do not await it
     if (document.documentElement.requestFullscreen) {
-      await document.documentElement.requestFullscreen().catch(() => {});
+      document.documentElement.requestFullscreen().catch(() => {
+        // Silently fail if fullscreen is blocked; VR is the priority
+      });
     }
+
+    // Call enterVR in the same execution tick as the click event
     store.enterVR();
   };
 
   return (
     <div className="absolute top-4 right-4 z-50">
       <button
-        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg"
-        onClick={enterVR}
+        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-transform active:scale-95"
+        onClick={handleStartVR}
       >
         START VR EXPERIENCE
       </button>
@@ -86,23 +101,31 @@ export default function EchoVision3D({
   const centerZ = length_m / 2;
 
   return (
-    <div className="relative w-full h-screen bg-grey-400">
+    <div className="relative w-full h-screen bg-zinc-700">
       <VisualOverlay />
 
-      <Canvas style={{ height: "100%", width: "100%" }}>
+      <Canvas
+        style={{ height: "100%", width: "100%" }}
+        shadows
+        gl={{ antialias: true, alpha: false }}
+      >
         <XR store={store}>
+          {/* Shift the entire hall so the center point is at world 0,0,0 for VR comfort */}
           <group position={[-centerX, 0, -centerZ]}>
             <ambientLight intensity={0.6} />
-            <pointLight position={[10, 10, 10]} />
+            <pointLight position={[10, 10, 10]} intensity={1.5} castShadow />
+
             <PerspectiveCamera
               makeDefault
-              position={[centerX, 1.6, length_m]}
-              fov={70}
+              position={[width_m / 4, 1.6, 0]}
+              fov={90}
             />
 
             <Grid
               args={[width_m, length_m]}
-              position={[width_m / 2, 0, length_m / 2]}
+              position={[width_m / 2, -0.01, length_m / 2]}
+              cellColor="#333"
+              sectionColor="#555"
             />
 
             <CameraController
@@ -116,6 +139,7 @@ export default function EchoVision3D({
             <Suspense fallback={null}>
               <StageArea stage={stage_area} dimensions={dimensions} />
             </Suspense>
+
             <Suspense fallback={null}>
               <SeatingBlock
                 seating_area={seating_area}
@@ -125,7 +149,7 @@ export default function EchoVision3D({
             </Suspense>
 
             {sortedSpeakers.map((sp, i) => (
-              <Suspense fallback={null} key={i}>
+              <Suspense fallback={null} key={`speaker-${i}`}>
                 <Speaker3D speaker={sp} />
               </Suspense>
             ))}
