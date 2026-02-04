@@ -1,9 +1,10 @@
 "use client";
 
+import { Suspense, useMemo } from "react";
 import { Canvas } from "@react-three/fiber";
+import { useThree } from "@react-three/fiber";
 import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
 import { XR, createXRStore, useXR } from "@react-three/xr";
-import { Suspense, useMemo } from "react";
 
 import {
   SpeakerPosition,
@@ -57,24 +58,40 @@ function CameraController({ dimensions, centerX, centerZ }: any) {
  * side effect, but store.enterVR() is called synchronously
  * to satisfy the browser's User Activation requirement.
  */
+
 function VisualOverlay() {
-  const handleStartVR = () => {
-    // Attempt fullscreen but do not await it
+  const { gl } = useThree();
+
+  const handleStartVR = async () => {
+    // Optional fullscreen (do NOT await)
     if (document.documentElement.requestFullscreen) {
-      document.documentElement.requestFullscreen().catch(() => {
-        // Silently fail if fullscreen is blocked; VR is the priority
-      });
+      document.documentElement.requestFullscreen().catch(() => {});
     }
 
-    // Call enterVR in the same execution tick as the click event
-    store.enterVR();
+    // WebXR support check
+    if (!navigator.xr) {
+      console.warn("WebXR not supported on this device");
+      return;
+    }
+
+    try {
+      // IMPORTANT: requestSession MUST happen directly in click handler
+      const session = await navigator.xr.requestSession("immersive-vr", {
+        optionalFeatures: ["local-floor", "bounded-floor"],
+      });
+
+      // Attach session to Three.js renderer
+      gl.xr.setSession(session);
+    } catch (error) {
+      console.error("Failed to start VR session:", error);
+    }
   };
 
   return (
-    <div className="absolute top-4 right-4 z-50">
+    <div className="absolute top-4 right-4 z-50 pointer-events-auto">
       <button
-        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-transform active:scale-95"
         onClick={handleStartVR}
+        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-transform active:scale-95"
       >
         START VR EXPERIENCE
       </button>
@@ -108,6 +125,9 @@ export default function EchoVision3D({
         style={{ height: "100%", width: "100%" }}
         shadows
         gl={{ antialias: true, alpha: false }}
+        onCreated={({ gl }) => {
+          gl.xr.enabled = true;
+        }}
       >
         <XR store={store}>
           {/* Shift the entire hall so the center point is at world 0,0,0 for VR comfort */}
