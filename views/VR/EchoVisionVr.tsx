@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useMemo } from "react";
-import { Canvas, useThree } from "@react-three/fiber";
+import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
 import { XR, createXRStore, useXR } from "@react-three/xr";
 
@@ -18,8 +18,7 @@ import Speaker3D from "../3D/components/Speaker3D";
 import { SeatingBlock } from "../3D/components/SeatingArea";
 
 /**
- * XR Store
- * Keep minimal to avoid unsupported feature rejections
+ * XR Store - this manages the session automatically
  */
 const store = createXRStore({
   hand: true,
@@ -50,47 +49,19 @@ function CameraController({ dimensions, centerX, centerZ }: any) {
 }
 
 /**
- * XR Session Controller
- * MUST live inside <Canvas>
- */
-function XRSessionController() {
-  const { gl } = useThree();
-
-  const startVR = async () => {
-    if (!navigator.xr) {
-      console.warn("WebXR not supported");
-      return;
-    }
-
-    try {
-      const session = await navigator.xr.requestSession("immersive-vr", {
-        optionalFeatures: ["local-floor", "bounded-floor"],
-      });
-
-      gl.xr.setSession(session);
-    } catch (error) {
-      console.error("Failed to start VR session:", error);
-    }
-  };
-
-  // Bridge XR start to DOM UI safely
-  if (typeof window !== "undefined") {
-    (window as any).__ECHOVISION_START_VR__ = startVR;
-  }
-
-  return null;
-}
-
-/**
- * DOM Overlay (NO R3F hooks here)
+ * DOM Overlay - use store.enterVR() directly
  */
 function VisualOverlay() {
-  const handleStartVR = () => {
-    // Optional fullscreen (do not await)
-    document.documentElement.requestFullscreen?.().catch(() => {});
+  const handleStartVR = async () => {
+    try {
+      // Optional fullscreen (don't await - it might block)
+      document.documentElement.requestFullscreen?.().catch(() => {});
 
-    // Trigger XR session
-    (window as any).__ECHOVISION_START_VR__?.();
+      // Use the store's enterVR method - this handles user activation correctly
+      await store.enterVR();
+    } catch (error) {
+      console.error("Failed to enter VR:", error);
+    }
   };
 
   return (
@@ -127,16 +98,8 @@ export default function EchoVision3D({
     <div className="relative w-full h-screen bg-zinc-700">
       <VisualOverlay />
 
-      <Canvas
-        shadows
-        gl={{ antialias: true, alpha: false }}
-        onCreated={({ gl }) => {
-          gl.xr.enabled = true;
-        }}
-      >
+      <Canvas shadows gl={{ antialias: true, alpha: false }}>
         <XR store={store}>
-          <XRSessionController />
-
           {/* Center hall at world origin for VR comfort */}
           <group position={[-centerX, 0, -centerZ]}>
             <ambientLight intensity={0.6} />
