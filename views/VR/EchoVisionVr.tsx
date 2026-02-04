@@ -1,9 +1,9 @@
 "use client";
 
-import { Suspense, useMemo, useEffect, useRef } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
 import { XR, createXRStore, useXR } from "@react-three/xr";
+import { Suspense, useMemo } from "react";
 
 import {
   SpeakerPosition,
@@ -11,21 +11,19 @@ import {
   StageData,
   SeatingAreaProps,
 } from "@/types/speaker";
-
 import Hall from "../3D/components/Hall";
 import StageArea from "../3D/components/Stage";
 import Speaker3D from "../3D/components/Speaker3D";
 import { SeatingBlock } from "../3D/components/SeatingArea";
 
 /**
- * XR Store - Streamlined for maximum compatibility
+ * 1. Initialize XR Store
+ * Removed 'layers' and 'dom-overlay' hints that cause
+ * rejections in certain immersive-vr deployments.
  */
 const store = createXRStore({
   hand: true,
   controller: true,
-  // This ensures the session doesn't try to restart automatically
-  // which often causes SecurityErrors in production.
-  enterGrantedSession: false,
 });
 
 type Props = {
@@ -35,6 +33,11 @@ type Props = {
   seating_area?: SeatingAreaProps;
 };
 
+/**
+ * 2. Camera Controller logic
+ * OrbitControls are disabled automatically when an active
+ * XR session is detected to prevent input conflicts.
+ */
 function CameraController({ dimensions, centerX, centerZ }: any) {
   const session = useXR((state) => state.session);
   if (session) return null;
@@ -49,39 +52,29 @@ function CameraController({ dimensions, centerX, centerZ }: any) {
 }
 
 /**
- * Refactored VisualOverlay
- * Uses a native ref to ensure the click event is seen as a
- * "Direct User Gesture" by the browser's XR security manager.
+ * 3. Visual Overlay (The Fix)
+ * The function is no longer async. We trigger fullscreen as a
+ * side effect, but store.enterVR() is called synchronously
+ * to satisfy the browser's User Activation requirement.
  */
 function VisualOverlay() {
-  const buttonRef = useRef<HTMLButtonElement>(null);
+  const handleStartVR = () => {
+    // Attempt fullscreen but do not await it
+    if (document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(() => {
+        // Silently fail if fullscreen is blocked; VR is the priority
+      });
+    }
 
-  useEffect(() => {
-    const btn = buttonRef.current;
-    if (!btn) return;
-
-    // Use a synchronous native listener to ensure 0ms delay
-    const triggerVR = () => {
-      // Triggering fullscreen is optional; don't let it crash the flow
-      try {
-        if (document.documentElement.requestFullscreen) {
-          document.documentElement.requestFullscreen().catch(() => {});
-        }
-      } catch (e) {}
-
-      // CALL THIS SYNCHRONOUSLY
-      store.enterVR();
-    };
-
-    btn.addEventListener("click", triggerVR);
-    return () => btn.removeEventListener("click", triggerVR);
-  }, []);
+    // Call enterVR in the same execution tick as the click event
+    store.enterVR();
+  };
 
   return (
-    <div className="absolute top-4 right-4 z-[9999] pointer-events-auto">
+    <div className="absolute top-4 right-4 z-50">
       <button
-        ref={buttonRef}
-        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-xl active:scale-95 transition-all"
+        className="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-lg shadow-lg transition-transform active:scale-95"
+        onClick={handleStartVR}
       >
         START VR EXPERIENCE
       </button>
@@ -108,18 +101,16 @@ export default function EchoVision3D({
   const centerZ = length_m / 2;
 
   return (
-    <div className="relative w-full h-screen bg-zinc-700 overflow-hidden">
+    <div className="relative w-full h-screen bg-zinc-600">
       <VisualOverlay />
 
       <Canvas
+        style={{ height: "100%", width: "100%" }}
         shadows
-        gl={{ antialias: true, alpha: false, preserveDrawingBuffer: true }}
-        onCreated={({ gl }) => {
-          // Extra push for WebXR compatibility in certain environments
-          gl.xr.enabled = true;
-        }}
+        gl={{ antialias: true, alpha: false }}
       >
         <XR store={store}>
+          {/* Shift the entire hall so the center point is at world 0,0,0 for VR comfort */}
           <group position={[-centerX, 0, -centerZ]}>
             <ambientLight intensity={0.6} />
             <pointLight position={[10, 10, 10]} intensity={1.5} castShadow />
