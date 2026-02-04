@@ -7,6 +7,7 @@ export interface SpeakerPosition {
   description?: string;
   angle_horizontal?: number; // Optional: horizontal aiming angle in degrees
   angle_vertical?: number; // Optional: vertical aiming angle in degrees
+  range?: number;
 }
 
 export interface SpeakerRecommendation {
@@ -45,12 +46,6 @@ export interface RecommendedFix {
   priority: "High" | "Medium" | "Low";
 }
 
-export interface PlacementView {
-  view_type: "2D" | "3D" | "VR" | "AR";
-  description: string;
-  key_features: string[];
-}
-
 export interface AnalysisResult {
   room_type: string;
   dimensions: Dimensions;
@@ -64,7 +59,6 @@ export interface AnalysisResult {
   // All speaker positions (flattened from recommendations)
   all_speaker_positions: SpeakerPosition[];
   seating_area: SeatingAreaProps;
-  placement_views: PlacementView[];
   critical_issues: CriticalIssue[]; // Can be empty array
   recommended_fixes: RecommendedFix[]; // Can be empty array
   total_estimated_cost_usd: number; // Will be 0 if no fixes needed

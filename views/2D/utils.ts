@@ -24,6 +24,21 @@ function clamp(value: number, min: number, max: number) {
  * X is centered for visualization
  * Z is depth
  */
+
+function getSvgRotation(speaker: SpeakerPosition) {
+  let angle = speaker.angle_horizontal ?? 0;
+
+  if (speaker.type === "monitor") angle += 0;
+
+  return angle;
+}
+
+export function getSvgRange(rangeM: number, dimensions: Dimensions) {
+  // If rangeM is 5 and hall length is 50, this is 10% of VIEWBOX_HEIGHT.
+  // 0.10 * 1600 = 160px.
+  return (rangeM / dimensions.length_m) * HALL.height;
+}
+
 export function metersToSvg(
   worldX: number,
   worldZ: number,
@@ -53,5 +68,6 @@ export function mapSpeakersToSvg(
   return speakers.map((sp) => ({
     ...sp,
     ...metersToSvg(sp.x, sp.z, dimensions),
+    rotation: getSvgRotation(sp),
   }));
 }

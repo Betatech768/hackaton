@@ -26,13 +26,13 @@ type Props = {
   dimensions?: Dimensions;
   speakers?: SpeakerPosition[];
   stage_area?: StageData;
-  seating_area: SeatingAreaProps;
+  seating_area?: SeatingAreaProps;
 };
 
 // 2. Camera Controller logic
 function CameraController({ dimensions, centerX, centerZ }: any) {
-  const isPresenting = useXR((state) => state.isPresenting);
-  if (isPresenting) return null; // Disable OrbitControls in VR
+  const session = useXR((state) => state.session);
+  if (session) return null; // Disable OrbitControls in VR
 
   return (
     <OrbitControls
@@ -47,6 +47,7 @@ function CameraController({ dimensions, centerX, centerZ }: any) {
 function VisualOverlay() {
   // Note: we can't use useXR() here because this is outside the <XR> provider.
   // We use the store's native subscribe or just standard button logic.
+
   const enterVR = async () => {
     if (document.documentElement.requestFullscreen) {
       await document.documentElement.requestFullscreen().catch(() => {});

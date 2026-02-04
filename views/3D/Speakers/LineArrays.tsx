@@ -35,7 +35,7 @@ export default function LineArray(props: JSX.IntrinsicElements["group"]) {
   }, [textures]);
 
   return (
-    <group {...props} dispose={null} scale={0.03}>
+    <group {...props} dispose={null} scale={0.025}>
       <group rotation={[-Math.PI / 2, 0, 0]}>
         {/* We use meshStandardMaterial overrides for each mesh to ensure our textures are used */}
 

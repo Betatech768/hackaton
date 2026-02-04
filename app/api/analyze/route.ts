@@ -176,30 +176,21 @@ const speakerAnalysisSchema = {
             type: SchemaType.NUMBER,
             description: "Optional: vertical aiming angle in degrees",
           },
-        },
-        required: ["type", "x", "y", "z"],
-      },
-    },
-
-    placement_views: {
-      type: SchemaType.ARRAY,
-      items: {
-        type: SchemaType.OBJECT,
-        properties: {
-          view_type: {
-            type: SchemaType.STRING,
-            description: "2D, 3D, VR, or AR",
-          },
-          description: {
-            type: SchemaType.STRING,
-            description: "What this view shows",
-          },
-          key_features: {
-            type: SchemaType.ARRAY,
-            items: { type: SchemaType.STRING },
+          range: {
+            type: SchemaType.NUMBER,
+            description:
+              "Effective acoustic throw distance in meters. Mains: 20-50m, Fills/Monitors: 3-10m, Subs: 10-15m. Adjust based on hall depth.",
           },
         },
-        required: ["view_type", "description", "key_features"],
+        required: [
+          "type",
+          "x",
+          "y",
+          "z",
+          "angle_horizontal",
+          "angle_vertical",
+          "range",
+        ],
       },
     },
 
@@ -304,7 +295,6 @@ const speakerAnalysisSchema = {
     "seating_capacity_estimate",
     "speaker_recommendations",
     "all_speaker_positions",
-    "placement_views",
     "critical_issues",
     "recommended_fixes",
     "total_estimated_cost_usd",
@@ -381,7 +371,7 @@ export async function POST(request: NextRequest) {
       - Line arrays MUST respect hall height
       - Speaker positions MUST NOT exceed hall bounds
       - Seating area must not exceed hall bounds
-      - Seating area must respect stage position 
+      - Seating area must be atleast 1m away from stage position 
       - Use realistic professional audio engineering assumptions for Seating Area 
 
       Use realistic professional audio engineering assumptions

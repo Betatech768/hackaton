@@ -7,13 +7,14 @@ import { ThreeEvent } from "@react-three/fiber";
 import { Html } from "@react-three/drei";
 
 type Props = {
-  seating_area: SeatingAreaProps;
+  seating_area?: SeatingAreaProps;
   dimensions?: Dimensions;
   stage_area?: StageData;
 };
 
 export function SeatingBlock({ seating_area, dimensions, stage_area }: Props) {
   if (!dimensions || !stage_area) return null;
+  if (!seating_area) return null;
 
   const meshRef = useRef<THREE.InstancedMesh>(null!);
   const {

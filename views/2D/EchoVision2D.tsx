@@ -104,6 +104,7 @@ export default function EchoVision2D({
       {/* ===== SPEAKERS ===== */}
       <g clipPath="url(#hall-clip)">
         {sortedSpeakers.map((sp, i) => {
+          console.log(sp.range);
           const color = SPEAKER_COLORS[sp.type] || "#fff";
           return (
             <g
@@ -111,7 +112,14 @@ export default function EchoVision2D({
               transform={`translate(${sp.cx}, ${sp.cy}) rotate(${sp.type === "monitor" && (sp.angle_horizontal ?? 0) < 180 ? 180 : (sp.angle_horizontal ?? 0)})`}
             >
               {/* Coverage */}
-              {sp.type !== "subwoofer" && <CoverageCone color={color} />}
+              {sp.type !== "subwoofer" && (
+                <CoverageCone
+                  color={color}
+                  range={sp.range}
+                  dispersionAngle={sp.type === "main" ? 90 : 120}
+                  dimensions={dimensions}
+                />
+              )}
 
               {/* Speaker Icon */}
               {sp.type === "subwoofer" ? (

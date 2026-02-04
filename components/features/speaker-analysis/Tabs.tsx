@@ -19,7 +19,7 @@ type Props = {
   dimensions?: Dimensions;
   speakerPosition?: SpeakerPosition[];
   stage_area?: StageData;
-  seating_area: SeatingAreaProps;
+  seating_area?: SeatingAreaProps;
 };
 
 export default function Tabs({
