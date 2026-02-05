@@ -120,7 +120,7 @@ export default function Docs() {
               </ul>
             </div>
 
-            <div>
+            <div id="how-to-vr">
               <h3 className="text-xl font-bold mb-3">5. VR Walkthrough</h3>
               <ul className="list-disc pl-6 space-y-1">
                 <li>Walk through the venue at human eye level</li>
@@ -128,6 +128,63 @@ export default function Docs() {
                 <li>Identify dead zones and overlap intuitively</li>
               </ul>
             </div>
+            <section className="mb-20" id="how-to-vr">
+              <h2 className="text-3xl font-extrabold text-white mb-12 flex items-center gap-4">
+                <span className="p-3 bg-linear-to-br from-blue-500/30 to-indigo-500/30 rounded-xl shadow">
+                  🥽
+                </span>
+                How to Use VR Mode
+              </h2>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                {/* Option Card Component */}
+                {[
+                  {
+                    title: "Meta Quest (Standalone)",
+                    steps: [
+                      "Open the Meta Quest Browser inside your headset.",
+                      "Navigate to your HTTPS URL (e.g., your Vercel or Ngrok link).",
+                      "Tap the 'Enter VR' button. Look for the browser prompt to 'Allow' immersive view.",
+                    ],
+                  },
+                  {
+                    title: "PCVR (Link / SteamVR)",
+                    steps: [
+                      "Connect your headset to your PC and enable Quest Link or SteamVR.",
+                      "Open Chrome, Edge or Firefox (recommended) on your desktop and go to the EchoVision site.",
+                      "Click 'Enter VR'. Put on your headset to begin the walkthrough.",
+                    ],
+                  },
+                  {
+                    title: "No Headset? (Emulator)",
+                    steps: [
+                      "Install the WebXR API Emulator extension from the Chrome Web Store.",
+                      "Open DevTools (F12) and find the WebXR tab.",
+                      "Select a device and click 'Enter VR' to see the split-screen simulation on your monitor.",
+                    ],
+                  },
+                ].map((option, idx) => (
+                  <div
+                    key={idx}
+                    className="p-6 rounded-3xl bg-zinc-900/60 border border-zinc-800 hover:bg-zinc-900/80 transition-all flex flex-col shadow-lg"
+                  >
+                    <h3 className="text-xl font-bold text-white mb-6">
+                      {option.title}
+                    </h3>
+                    <ol className="text-sm text-zinc-300 flex flex-col gap-4 list-none">
+                      {option.steps.map((step, stepIdx) => (
+                        <li key={stepIdx} className="flex items-start gap-3">
+                          <span className="font-mono text-blue-400 min-w-[2rem] text-right">
+                            {(stepIdx + 1).toString().padStart(2, "0")}
+                          </span>
+                          <p>{step}</p>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                ))}
+              </div>
+            </section>
 
             <div>
               <h3 className="text-xl font-bold mb-3">

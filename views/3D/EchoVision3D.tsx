@@ -1,5 +1,4 @@
 "use client";
-
 import { Suspense, useRef, useMemo } from "react";
 import { Canvas, useFrame } from "@react-three/fiber";
 import { OrbitControls, Grid } from "@react-three/drei";
@@ -17,7 +16,6 @@ import Hall from "./components/Hall";
 import Speaker3D from "./components/Speaker3D";
 import StageArea from "./components/Stage";
 import { SeatingBlock } from "./components/SeatingArea";
-import NoSRR from "@/app/errorHandling/NoSRR";
 
 type Props = {
   dimensions?: Dimensions;
@@ -82,8 +80,6 @@ export default function EchoVision3D({
   const centerZ = length_m / 1.8;
   const cameraHeight = Math.min(height_m * 0.6, 12);
 
-  // calculate the area of the hall
-
   // Sort speakers so Subwoofers render first (if applicable to 3D transparency/ordering)
   const sortedSpeakers = useMemo(() => {
     return [...speakers].sort((a, b) => {
@@ -93,50 +89,47 @@ export default function EchoVision3D({
     });
   }, [speakers]);
   return (
-    <NoSRR>
-      <Canvas
-        camera={{
-          position: [centerX, cameraHeight - 5, centerZ + length_m * 0.5],
-          fov: 50,
-          near: 0.1,
-          far: 200,
-        }}
-        className="brown rounded-xl"
-      >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 20, 10]} intensity={1} />
+    <Canvas
+      camera={{
+        position: [centerX, cameraHeight - 5, centerZ + length_m * 0.5],
+        fov: 50,
+        near: 0.1,
+        far: 200,
+      }}
+      className="brown rounded-xl"
+    >
+      <ambientLight intensity={0.6} />
+      <directionalLight position={[10, 20, 10]} intensity={1} />
 
-        <Grid
-          args={[width_m, length_m]}
-          position={[width_m / 2, 0, length_m / 2]}
-        />
+      <Grid
+        args={[width_m, length_m]}
+        position={[width_m / 2, 0, length_m / 2]}
+      />
 
-        {/* Logic moved here to be inside the Canvas context */}
-        <CameraController
+      <CameraController
+        dimensions={dimensions}
+        centerX={centerX}
+        centerZ={centerZ}
+      />
+
+      <Hall dimensions={dimensions} />
+
+      <Suspense fallback={null}>
+        <StageArea stage={stage_area} dimensions={dimensions} />
+      </Suspense>
+      <Suspense fallback={null}>
+        <SeatingBlock
+          seating_area={seating_area}
           dimensions={dimensions}
-          centerX={centerX}
-          centerZ={centerZ}
+          stage_area={stage_area}
         />
+      </Suspense>
 
-        <Hall dimensions={dimensions} />
-
-        <Suspense fallback={null}>
-          <StageArea stage={stage_area} dimensions={dimensions} />
+      {sortedSpeakers.map((sp, i) => (
+        <Suspense fallback={null} key={i}>
+          <Speaker3D speaker={sp} />
         </Suspense>
-        <Suspense fallback={null}>
-          <SeatingBlock
-            seating_area={seating_area}
-            dimensions={dimensions}
-            stage_area={stage_area}
-          />
-        </Suspense>
-
-        {sortedSpeakers.map((sp, i) => (
-          <Suspense fallback={null} key={i}>
-            <Speaker3D speaker={sp} />
-          </Suspense>
-        ))}
-      </Canvas>
-    </NoSRR>
+      ))}
+    </Canvas>
   );
 }

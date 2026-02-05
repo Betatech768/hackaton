@@ -75,7 +75,7 @@ export default function EchoVision() {
   );
 
   return (
-    <section className="flex flex-col items-center justify-center min-h-dvh p-5 font-poppins bg-[url('/heroImage.jpg')] bg-cover bg-no-repeat bg-center pt-60 pb-40">
+    <section className="flex flex-col items-center justify-center min-h-dvh p-5 font-poppins bg-[url('/heroImage.jpg')] bg-cover bg-no-repeat bg-center pt-44 pb-40">
       <Hero />
 
       <div className="flex flex-col mt-7 items-center justify-center w-full">
@@ -112,8 +112,7 @@ export default function EchoVision() {
             <p className="text-zinc-400 mb-6">
               Your room is approximately{" "}
               <strong>{roomWidth * roomDepth}m²</strong>. EchoVision is
-              currently optimized for professional concert halls and large
-              venues.
+              currently optimized for concert halls and large venues.
             </p>
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
               <p className="text-blue-400 text-sm font-medium">

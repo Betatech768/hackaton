@@ -97,7 +97,7 @@ export default function UploadForm({
         </h2>
 
         <p className="text-zinc-400 text-center mb-6">
-          Upload up to 4 images: Stage, Left, Right, Back, and Ceiling views.
+          Upload 4 images: Stage, Left, Right, Back, and Ceiling views.
         </p>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">

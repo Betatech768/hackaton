@@ -14,6 +14,7 @@ import {
 import EchoVision2D from "@/views/2D/EchoVision2D";
 import EchoVision3D from "@/views/3D/EchoVision3D";
 import EchoVisionVr from "@/views/VR/EchoVisionVr";
+import NoSRR from "@/app/errorHandling/NoSRR";
 
 type Props = {
   dimensions?: Dimensions;
@@ -30,64 +31,56 @@ export default function Tabs({
 }: Props) {
   const [activeTab, setActiveTab] = useState("2d");
 
+  // Helper to handle tab classes and fix the 'whute' typo
+  const getTabClass = (id: string) =>
+    `px-4 py-2 font-medium transition-colors ${
+      activeTab === id
+        ? "text-blue-600 border-b-2 border-blue-600"
+        : "text-white hover:text-blue-500"
+    }`;
+
   return (
     <section className="flex flex-col items-center p-4 sm:p-6 md:p-8 lg:p-10 min-h-[60dvh] bg-zinc-800/50 backdrop-blur-sm">
       <div className="w-full max-w-4xl rounded-lg shadow-lg p-6">
         {/* Tab Navigation */}
-        <div className="flex items-center justify-between w-full border-b border-gray-300 pb-2 mb-6">
+        <div className="flex items-center justify-between w-full border-b border-gray-300 pb-2 mb-6 overflow-x-auto whitespace-nowrap">
           <button
             onClick={() => setActiveTab("2d")}
-            className={`px-4 py-2 font-medium transition-colors ${
-              activeTab === "2d"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-whute hover:text-blue-500"
-            }`}
+            className={getTabClass("2d")}
           >
-            2D Placement View
+            2D Placement
           </button>
           <button
             onClick={() => setActiveTab("3d")}
-            className={`px-4 py-2 font-medium transition-colors ${
-              activeTab === "3d"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-whute hover:text-blue-500"
-            }`}
+            className={getTabClass("3d")}
           >
-            3D Placement View
+            3D Placement
           </button>
           <button
             onClick={() => setActiveTab("vr")}
-            className={`px-4 py-2 font-medium transition-colors ${
-              activeTab === "vr"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-whute hover:text-blue-500"
-            }`}
+            className={getTabClass("vr")}
           >
-            VR Placement View
+            VR Experience
           </button>
           <button
             onClick={() => setActiveTab("ar")}
-            className={`px-4 py-2 font-medium transition-colors ${
-              activeTab === "ar"
-                ? "text-blue-600 border-b-2 border-blue-600"
-                : "text-whute hover:text-blue-500"
-            }`}
+            className={getTabClass("ar")}
           >
-            AR Placement View
+            AR View
           </button>
         </div>
 
         {/* Tab Content */}
-        <div className="min-h-100">
+        <div className="min-h-400px">
           {activeTab === "2d" && (
             <div className="animate-fadeIn">
               <h2 className="text-2xl font-bold mb-4 text-white text-center">
-                2D Placement View
+                2D Floor Plan
               </h2>
-              <p className="text-white mb-6 text-center">
-                View and arrange objects in a traditional 2D floor plan layout.
+              <p className="text-zinc-300 mb-6 text-center">
+                Arrange objects in a traditional 2D layout.
               </p>
-              <div className="w-full max-w-4xl mx-auto ">
+              <div className="w-full max-w-4xl mx-auto">
                 <div className="relative w-full aspect-5/8 max-h-[70vh]">
                   <EchoVision2D
                     dimensions={dimensions}
@@ -103,22 +96,23 @@ export default function Tabs({
           {activeTab === "3d" && (
             <div className="animate-fadeIn">
               <h2 className="text-2xl font-bold mb-4 text-white text-center">
-                3D Placement View
+                3D Render
               </h2>
-              <p className="text-whute mb-6 flex flex-col text-center">
-                Interact with objects in a fully rendered 3D environment.
-                <span className="text-sm text-center text-gray-400 italic font-ubuntu">
-                  Click and Drag to Pan, scroll to zoom in and out. Hover over
-                  speakers to see description
+              <p className="text-zinc-300 mb-6 flex flex-col text-center">
+                Interactive 3D environment.
+                <span className="text-xs text-zinc-500 italic">
+                  Drag to Orbit • Scroll to Zoom
                 </span>
               </p>
-              <div className="aspect-video bg-linear-to-b from-blue-100 to-blue-50 rounded border border-gray-300 flex items-center justify-center">
-                <EchoVision3D
-                  dimensions={dimensions}
-                  speakers={speakerPosition}
-                  stage_area={stage_area}
-                  seating_area={seating_area}
-                />
+              <div className="aspect-video bg-zinc-900 rounded-xl border border-white/10 overflow-hidden">
+                <NoSRR>
+                  <EchoVision3D
+                    dimensions={dimensions}
+                    speakers={speakerPosition}
+                    stage_area={stage_area}
+                    seating_area={seating_area}
+                  />
+                </NoSRR>
               </div>
             </div>
           )}
@@ -126,25 +120,23 @@ export default function Tabs({
           {activeTab === "vr" && (
             <div className="animate-fadeIn">
               <h2 className="text-2xl font-bold mb-4 text-white text-center">
-                VR Placement View
+                WebXR (VR)
               </h2>
-              <p className="text-white mb-6 flex flex-col text-center">
-                Experience immersive virtual reality placement with VR headset
-                support.
-                <span className="text-sm text-center text-gray-400 italic font-ubuntu">
-                  Please see requirements for VR in{" "}
-                  <Link href="/docs">Docs</Link>
+              <p className="text-zinc-300 mb-6 flex flex-col text-center">
+                Immersive placement for VR headsets.
+                <span className="text-xs text-blue-400 underline">
+                  <Link href="/docs/#how-to-vr">Check VR Requirements</Link>
                 </span>
               </p>
-              <div className="bg-linear-to-br from-purple-100 to-pink-50 rounded border border-gray-300">
-                <span className="text-gray-400">
+              <div className="aspect-video bg-zinc-900 rounded-xl border border-white/10 overflow-hidden flex items-center justify-center">
+                <NoSRR>
                   <EchoVisionVr
                     dimensions={dimensions}
                     speakers={speakerPosition}
                     stage_area={stage_area}
                     seating_area={seating_area}
                   />
-                </span>
+                </NoSRR>
               </div>
             </div>
           )}
@@ -152,20 +144,19 @@ export default function Tabs({
           {activeTab === "ar" && (
             <div className="animate-fadeIn">
               <h2 className="text-2xl font-bold mb-4 text-white text-center">
-                AR Placement View
+                Augmented Reality
               </h2>
-              <p className="text-whute mb-6 text-center">
-                Visualize objects in your real environment using augmented
-                reality.
-              </p>
-              <div className="aspect-video bg-linear-to-br from-green-100 to-cyan-50 rounded border border-gray-300 flex items-center justify-center">
-                <span className="text-gray-400">AR View Coming Soon...</span>
+              <div className="aspect-video bg-zinc-900 rounded-xl border border-dashed border-zinc-700 flex items-center justify-center">
+                <span className="text-zinc-500 font-medium">
+                  AR Experience Coming Soon...
+                </span>
               </div>
             </div>
           )}
         </div>
       </div>
 
+      {/* Tailwind handles the animation via globals.css or keep this for scoped styles */}
       <style jsx>{`
         @keyframes fadeIn {
           from {
@@ -178,7 +169,7 @@ export default function Tabs({
           }
         }
         .animate-fadeIn {
-          animation: fadeIn 0.3s ease-in-out;
+          animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
       `}</style>
     </section>
