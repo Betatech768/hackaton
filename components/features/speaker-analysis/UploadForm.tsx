@@ -7,6 +7,7 @@ type UploadFormProps = {
   onAnalyze?: (images: (HallImage | null)[]) => void;
   loading?: boolean;
   statusCode?: any;
+  errorHallImagesNotMatching?: boolean;
 };
 type HallImage = {
   role: "stage" | "left" | "right" | "back/ceiling";
@@ -17,6 +18,7 @@ export default function UploadForm({
   onAnalyze,
   loading,
   statusCode,
+  errorHallImagesNotMatching,
 }: UploadFormProps) {
   const [selectedImages, setSelectedImages] = useState<(HallImage | null)[]>([
     null,
@@ -83,7 +85,7 @@ export default function UploadForm({
   // Post Request and Error Message for Images Less than 4
   const handleAnalyze = () => {
     if (selectedImages.filter(Boolean).length < 4) {
-      setDisplayError("Please Upload up to 4 Images");
+      setDisplayError("Please Upload 4 Images of Venue");
     } else {
       onAnalyze?.(selectedImages);
     }
@@ -152,6 +154,15 @@ export default function UploadForm({
         {selectedImages.filter(Boolean).length < 4 && (
           <div className="flex justify-center m-2">
             <p className="text-sm text-red-600">{displayError}</p>
+          </div>
+        )}
+
+        {errorHallImagesNotMatching && (
+          <div className="flex justify-center m-2">
+            <p className="text-sm text-red-600 flex flex-col text-center">
+              Some or all of uploaded images do not belong to the same venue.
+              click on the images to re-upload the correct ones.
+            </p>
           </div>
         )}
 

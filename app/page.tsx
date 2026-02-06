@@ -18,6 +18,8 @@ export default function EchoVision() {
     null,
   );
   const [errorCode, setErrorCode] = useState<number | null>(null);
+  const [errorHallImagesNotMatching, setErrorHallImagesNotMatching] =
+    useState(false);
 
   // --- Logic for Small Room Detection ---
   // Threshold: 60 square meters
@@ -25,27 +27,53 @@ export default function EchoVision() {
   const roomDepth = analysisResult?.dimensions?.length_m ?? 0;
   const isSmallRoom = roomWidth * roomDepth > 0 && roomWidth * roomDepth < 60;
 
+  // logic to handle the analysis of the hall based on uploaded images
   const handleAnalyzeHall = async (images: (HallImage | null)[]) => {
     const imagesToSend = images.filter(Boolean);
     if (imagesToSend.length === 0) return;
 
     setLoading(true);
     setErrorCode(null);
+    setErrorHallImagesNotMatching(false);
 
     try {
-      const res = await fetch("/api/analyze", {
+      // Step 1: Verify venue images match
+      const verifyRes = await fetch("/api/verify-venue", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ images: imagesToSend }),
       });
 
-      if (!res.ok) throw new Error(res.status.toString());
-      const result = await res.json();
+      if (!verifyRes.ok) {
+        throw new Error(verifyRes.status.toString());
+      }
+
+      const hallResult = await verifyRes.json();
+
+      if (hallResult.same_venue === false) {
+        setErrorHallImagesNotMatching(true);
+        setAnalysisResult(null);
+        setLoading(false);
+        return;
+      }
+
+      // Step 2: Analyze the hall
+      const analyzeRes = await fetch("/api/analyze", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ images: imagesToSend }),
+      });
+
+      if (!analyzeRes.ok) {
+        throw new Error(analyzeRes.status.toString());
+      }
+
+      const result = await analyzeRes.json();
       setAnalysisResult(result);
     } catch (err: any) {
-      console.error("Error analysis hall:", err);
       const code = parseInt(err.message);
       setErrorCode(isNaN(code) ? 500 : code);
+      setAnalysisResult(null);
     } finally {
       setLoading(false);
     }
@@ -85,6 +113,7 @@ export default function EchoVision() {
             onAnalyze={handleAnalyzeHall}
             loading={loading}
             statusCode={errorCode}
+            errorHallImagesNotMatching={errorHallImagesNotMatching}
           />
         )}
 
@@ -111,8 +140,9 @@ export default function EchoVision() {
             </h3>
             <p className="text-zinc-400 mb-6">
               Your room is approximately{" "}
-              <strong>{roomWidth * roomDepth}m²</strong>. EchoVision is
-              currently optimized for concert halls and large venues.
+              <strong>{(roomWidth * roomDepth).toFixed(1)}m²</strong>.
+              EchoVision is currently optimized for concert halls and large
+              venues.
             </p>
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
               <p className="text-blue-400 text-sm font-medium">
