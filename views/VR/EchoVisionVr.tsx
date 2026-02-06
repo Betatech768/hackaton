@@ -15,6 +15,7 @@ import Hall from "../3D/components/Hall";
 import StageArea from "../3D/components/Stage";
 import Speaker3D from "../3D/components/Speaker3D";
 import { SeatingBlock } from "../3D/components/SeatingArea";
+import CoverageRange from "../3D/components/CoverageRange";
 
 /**
  * 1. Initialize XR Store
@@ -120,7 +121,10 @@ export default function EchoVision3D({
                 stage_area={stage_area}
               />
               {sortedSpeakers.map((sp, i) => (
-                <Speaker3D key={`vr-sp-${i}`} speaker={sp} />
+                <Suspense fallback={null} key={`vr-sp-${i}`}>
+                  <Speaker3D speaker={sp} />
+                  <CoverageRange speaker={sp} />
+                </Suspense>
               ))}
             </Suspense>
 

@@ -143,7 +143,7 @@ export default function Docs() {
                     title: "Meta Quest (Standalone)",
                     steps: [
                       "Open the Meta Quest Browser inside your headset.",
-                      "Navigate to your HTTPS URL (e.g., your Vercel or Ngrok link).",
+                      "Navigate to Echovision site and upload your hall images.",
                       "Tap the 'Enter VR' button. Look for the browser prompt to 'Allow' immersive view.",
                     ],
                   },
@@ -151,14 +151,14 @@ export default function Docs() {
                     title: "PCVR (Link / SteamVR)",
                     steps: [
                       "Connect your headset to your PC and enable Quest Link or SteamVR.",
-                      "Open Chrome, Edge or Firefox (recommended) on your desktop and go to the EchoVision site.",
+                      "Open Chrome, Edge or Firefox (recommended) on your desktop and go to the EchoVision site, upload your hall images.",
                       "Click 'Enter VR'. Put on your headset to begin the walkthrough.",
                     ],
                   },
                   {
                     title: "No Headset? (Emulator)",
                     steps: [
-                      "Install the WebXR API Emulator extension from the Chrome Web Store.",
+                      "Install the WebXR API Emulator extension on Firefox from the Firefox Web Store. Chrome now uses the MetaQuest Emulator.",
                       "Open DevTools (F12) and find the WebXR tab.",
                       "Select a device and click 'Enter VR' to see the split-screen simulation on your monitor.",
                     ],
@@ -174,7 +174,7 @@ export default function Docs() {
                     <ol className="text-sm text-zinc-300 flex flex-col gap-4 list-none">
                       {option.steps.map((step, stepIdx) => (
                         <li key={stepIdx} className="flex items-start gap-3">
-                          <span className="font-mono text-blue-400 min-w-[2rem] text-right">
+                          <span className="font-mono text-blue-400 min-w-8 text-right">
                             {(stepIdx + 1).toString().padStart(2, "0")}
                           </span>
                           <p>{step}</p>
