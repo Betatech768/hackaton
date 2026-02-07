@@ -81,15 +81,13 @@ export default function EchoVision3D({
   }, [speakers]);
 
   // State to track which types are visible
-  const [visibleTypes, setVisibleTypes] = useState<Set<SpeakerType>>(
-    new Set(availableTypes),
-  );
+  const [visibleTypes, setVisibleTypes] = useState<Set<SpeakerType>>(new Set());
 
   // Toggle handler for speaker type visibility
   const handleToggle = (type: SpeakerType) => {
     setVisibleTypes((prev) => {
       const newSet = new Set(prev);
-      if (newSet.has(type)) {
+      if (prev.has(type)) {
         newSet.delete(type);
       } else {
         newSet.add(type);

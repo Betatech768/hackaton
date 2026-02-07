@@ -167,6 +167,7 @@ export default function EchoVision() {
               speakerPosition={all_speaker_positions}
               stage_area={stage_area}
               seating_area={seating_area}
+              setAnalysisResult={setAnalysisResult}
             />
             <Recommendations
               room={room_type}

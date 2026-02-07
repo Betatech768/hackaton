@@ -251,9 +251,30 @@ export default function Docs() {
             EchoVision provides informed modeling, not a replacement for
             certified acoustic measurement tools.
           </p>
+          <p className="mb-4">
+            Panaromic Images was a bit difficult to work with, so currently we
+            only support 4 standard views. In the future, we plan to allow users
+            to upload additional images from different angles for even more
+            comprehensive analysis.
+          </p>
+          <p className="mb-4">
+            Gemini's spatial reasoning is powerful but not perfect. Complex
+            venues with unusual layouts may require manual adjustments for
+            optimal accuracy.
+          </p>
           <p>
-            Planned: Frequency-specific modeling, real-time SPL simulation / AR,
-            and exportable technical reports.
+            EchoVision does not defend against intentionally misleading inputs.
+            Users should avoid: Intentionally misleading photos, Cropped images
+            hiding key context, Reused stock images, Screenshots of other venues
+          </p>
+          <p className="flex flex-col mt-4 gap-2">
+            Planned Improvements:{" "}
+            <span>
+              - Frequency-specific modeling, real-time SPL simulation / AR, and
+              exportable technical reports.
+            </span>{" "}
+            <span>- Remember past venues</span>
+            <span>- Reject outputs based on empirical error rates</span>
           </p>
         </footer>
       </article>

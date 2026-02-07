@@ -171,13 +171,6 @@ export default function Recommendations({
           Estimated Cost to Fix Issues: {totalEstimatedCost} USD
         </div>
       </section>
-
-      <button
-        className="cursor-pointer p-4 pt-4 mt-2 bg-white rounded-xl text-black hover:bg-red-900 hover:text-white  transition-all font-ubuntu"
-        onClick={() => window.location.reload()}
-      >
-        Upload New Images
-      </button>
     </>
   );
 }

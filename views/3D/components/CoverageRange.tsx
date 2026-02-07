@@ -10,7 +10,7 @@ const COVERAGE_PRESETS: Record<string, { angle: number }> = {
   main: { angle: 65 },
   fill: { angle: 90 },
   monitor: { angle: 100 },
-  delay: { angle: 50 },
+  delay: { angle: 70 },
   column: { angle: 40 },
   subwoofer: { angle: 180 },
 };
@@ -36,9 +36,13 @@ export default function CoverageRange({ speaker }: Props) {
   if (type === "main") {
     angle_vertical = angle_vertical + 45;
   }
-
+  if (type === "monitor") {
+    angle_vertical = angle_vertical + 300;
+  }
+  if (type === "delay") {
+    angle_vertical = angle_vertical + 45;
+  }
   const preset = COVERAGE_PRESETS[type] ?? COVERAGE_PRESETS.main;
-
   const geometry = useMemo(() => {
     if (type === "subwoofer") {
       return new THREE.SphereGeometry(range, 32, 32);

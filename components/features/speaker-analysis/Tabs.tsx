@@ -21,6 +21,7 @@ type Props = {
   speakerPosition?: SpeakerPosition[];
   stage_area?: StageData;
   seating_area?: SeatingAreaProps;
+  setAnalysisResult: (result: any) => void;
 };
 
 export default function Tabs({
@@ -28,6 +29,7 @@ export default function Tabs({
   speakerPosition,
   stage_area,
   seating_area,
+  setAnalysisResult,
 }: Props) {
   const [activeTab, setActiveTab] = useState("2d");
 
@@ -72,6 +74,12 @@ export default function Tabs({
 
         {/* Tab Content */}
         <div className="min-h-400px">
+          <button
+            onClick={() => setAnalysisResult(null)}
+            className="mt-8 text-zinc-500 hover:text-white transition-colors text-sm underline text-center block  mx-auto"
+          >
+            Upload a different venue
+          </button>
           {activeTab === "2d" && (
             <div className="animate-fadeIn">
               <h2 className="text-2xl font-bold mb-4 text-white text-center">
