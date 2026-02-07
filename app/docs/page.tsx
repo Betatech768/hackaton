@@ -252,6 +252,12 @@ export default function Docs() {
             certified acoustic measurement tools.
           </p>
           <p className="mb-4">
+            Currently EchoVision has no way of detecting if the uploaded images
+            are from the same venue. Inconsistent inputs may lead to inaccurate
+            analysis. We plan to implement a verification step in the future to
+            ensure all images belong to the same space.
+          </p>
+          <p className="mb-4">
             Panaromic Images was a bit difficult to work with, so currently we
             only support 4 standard views. In the future, we plan to allow users
             to upload additional images from different angles for even more

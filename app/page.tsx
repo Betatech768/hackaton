@@ -38,24 +38,28 @@ export default function EchoVision() {
 
     try {
       // Step 1: Verify venue images match
-      const verifyRes = await fetch("/api/verify-venue", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ images: imagesToSend }),
-      });
 
-      if (!verifyRes.ok) {
-        throw new Error(verifyRes.status.toString());
-      }
+      /**Handling Edge Case of Images not being from the same Venue
+       * Reduced the speed of the program so we commented it out **/
 
-      const hallResult = await verifyRes.json();
+      // const verifyRes = await fetch("/api/verify-venue", {
+      //   method: "POST",
+      //   headers: { "Content-Type": "application/json" },
+      //   body: JSON.stringify({ images: imagesToSend }),
+      // });
 
-      if (hallResult.same_venue === false) {
-        setErrorHallImagesNotMatching(true);
-        setAnalysisResult(null);
-        setLoading(false);
-        return;
-      }
+      // if (!verifyRes.ok) {
+      //   throw new Error(verifyRes.status.toString());
+      // }
+
+      // const hallResult = await verifyRes.json();
+
+      // if (hallResult.same_venue === false) {
+      //   setErrorHallImagesNotMatching(true);
+      //   setAnalysisResult(null);
+      //   setLoading(false);
+      //   return;
+      // }
 
       // Step 2: Analyze the hall
       const analyzeRes = await fetch("/api/analyze", {
