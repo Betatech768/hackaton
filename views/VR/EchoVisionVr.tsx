@@ -1,7 +1,13 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Grid, PerspectiveCamera } from "@react-three/drei";
+import {
+  OrbitControls,
+  Grid,
+  PerspectiveCamera,
+  useProgress,
+  Html,
+} from "@react-three/drei";
 import { XR, XRButton, useXR } from "@react-three/xr";
 import { Suspense, useMemo } from "react";
 
@@ -45,6 +51,17 @@ function CameraController({ dimensions, centerX, centerZ }: any) {
       maxPolarAngle={Math.PI / 2.1}
       makeDefault
     />
+  );
+}
+
+function Loader() {
+  const { progress } = useProgress();
+  return (
+    <Html center>
+      <div className="text-white font-bold">
+        Loading {Math.round(progress)}%
+      </div>
+    </Html>
   );
 }
 

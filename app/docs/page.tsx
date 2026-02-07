@@ -243,7 +243,43 @@ export default function Docs() {
           </blockquote>
         </section>
 
-        <footer className="mt-16 pt-8 border-t border-zinc-700 text-zinc-400 text-sm">
+        <section className="mb-12 p-6 bg-zinc-900/50 border border-zinc-700 rounded-xl">
+          <h2 className="text-2xl font-semibold mb-4 text-blue-400">
+            Performance Considerations
+          </h2>
+          <p className="mb-4">
+            EchoVision is optimized primarily for{" "}
+            <strong>desktop-class devices</strong>. Due to the computational
+            demands of real-time 3D rendering, spatial calculations, and WebXR
+            support, performance is significantly better on PCs and laptops with
+            stronger CPUs and GPUs.
+          </p>
+          <p className="mb-4">
+            On mobile devices, rendering performance may be reduced. Complex
+            scenes—such as large venues with multiple speakers and coverage
+            cones—can result in lower frame rates or limited interaction,
+            especially on mid-range or older smartphones.
+          </p>
+          <div className="mb-4">
+            <p className="mb-2">
+              This behavior is expected given current mobile browser constraints
+              around:
+            </p>
+            <ul className="list-disc pl-6 space-y-1 text-zinc-300">
+              <li>WebGL performance</li>
+              <li>Memory limits</li>
+              <li>WebXR support</li>
+              <li>Thermal throttling on mobile hardware</li>
+            </ul>
+          </div>
+          <p className="font-semibold text-blue-300">
+            For best results, EchoVision is recommended for use on desktop
+            browsers when performing detailed analysis or immersive
+            visualization.
+          </p>
+        </section>
+
+        <section className="mt-16 pt-8 border-t border-zinc-700 text-zinc-400 text-sm">
           <h2 className="text-xl font-semibold mb-4 text-white">
             Limitations & Future Improvements
           </h2>
@@ -286,7 +322,7 @@ export default function Docs() {
             <span>- Remember past venues</span>
             <span>- Reject outputs based on empirical error rates</span>
           </p>
-        </footer>
+        </section>
       </article>
     </>
   );

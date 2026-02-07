@@ -1,7 +1,7 @@
 "use client";
 import { Suspense, useMemo, useState } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, Grid } from "@react-three/drei";
+import { OrbitControls, Grid, Html, useProgress } from "@react-three/drei";
 
 // Types
 import {
@@ -56,6 +56,17 @@ function CameraController({
       maxAzimuthAngle={Math.PI / 3}
       enablePan={true}
     />
+  );
+}
+
+function Loader() {
+  const { progress } = useProgress();
+  return (
+    <Html center>
+      <div className="text-white font-bold">
+        Loading {Math.round(progress)}%
+      </div>
+    </Html>
   );
 }
 
@@ -122,41 +133,43 @@ export default function EchoVision3D({
         }}
         className="brown rounded-xl"
       >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[10, 20, 10]} intensity={1} />
+        <Suspense fallback={<Loader />}>
+          <ambientLight intensity={0.6} />
+          <directionalLight position={[10, 20, 10]} intensity={1} />
 
-        <Grid
-          args={[width_m, length_m]}
-          position={[width_m / 2, 0, length_m / 2]}
-        />
-
-        <CameraController
-          dimensions={dimensions}
-          centerX={centerX}
-          centerZ={centerZ}
-        />
-
-        <Hall dimensions={dimensions} />
-
-        <Suspense fallback={null}>
-          <StageArea stage={stage_area} dimensions={dimensions} />
-        </Suspense>
-        <Suspense fallback={null}>
-          <SeatingBlock
-            seating_area={seating_area}
-            dimensions={dimensions}
-            stage_area={stage_area}
+          <Grid
+            args={[width_m, length_m]}
+            position={[width_m / 2, 0, length_m / 2]}
           />
-        </Suspense>
 
-        {sortedSpeakers?.map((sp, i) => (
-          <Suspense fallback={null} key={i}>
-            {visibleTypes.has(sp.type as SpeakerType) && (
-              <CoverageRange speaker={sp} />
-            )}
-            <Speaker3D speaker={sp} />
+          <CameraController
+            dimensions={dimensions}
+            centerX={centerX}
+            centerZ={centerZ}
+          />
+
+          <Hall dimensions={dimensions} />
+
+          <Suspense fallback={null}>
+            <StageArea stage={stage_area} dimensions={dimensions} />
           </Suspense>
-        ))}
+          <Suspense fallback={null}>
+            <SeatingBlock
+              seating_area={seating_area}
+              dimensions={dimensions}
+              stage_area={stage_area}
+            />
+          </Suspense>
+
+          {sortedSpeakers?.map((sp, i) => (
+            <Suspense fallback={null} key={i}>
+              {visibleTypes.has(sp.type as SpeakerType) && (
+                <CoverageRange speaker={sp} />
+              )}
+              <Speaker3D speaker={sp} />
+            </Suspense>
+          ))}
+        </Suspense>
       </Canvas>
     </div>
   );
