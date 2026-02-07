@@ -8,6 +8,7 @@ type UploadFormProps = {
   loading?: boolean;
   statusCode?: any;
   errorHallImagesNotMatching?: boolean;
+  setReAnalyzeHall?: string[] | any;
 };
 type HallImage = {
   role: "stage" | "left" | "right" | "back/ceiling";
@@ -19,6 +20,7 @@ export default function UploadForm({
   loading,
   statusCode,
   errorHallImagesNotMatching,
+  setReAnalyzeHall,
 }: UploadFormProps) {
   const [selectedImages, setSelectedImages] = useState<(HallImage | null)[]>([
     null,
@@ -88,6 +90,7 @@ export default function UploadForm({
       setDisplayError("Please Upload 4 Images of Venue");
     } else {
       onAnalyze?.(selectedImages);
+      setReAnalyzeHall?.(selectedImages);
     }
   };
 
