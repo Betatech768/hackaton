@@ -13,6 +13,10 @@ export default function Hero() {
         <span className="text-blue-400 font-semibold">3D</span>,{" "}
         <span className="text-blue-400 font-semibold">VR</span> & AR.
       </p>
+      <p className="text-sm text-red-600 mt-4 flex items-center justify-center flex-col">
+        EchoVision is powered by AI and can make mistakes.{" "}
+        <span>Always verify outputs carefully.</span>
+      </p>
     </div>
   );
 }

@@ -268,6 +268,10 @@ export default function Docs() {
             venues with unusual layouts may require manual adjustments for
             optimal accuracy.
           </p>
+          <p className="mb-4">
+            Gemini may return response that is not technically sound. Users
+            should verify all outputs carefully.
+          </p>
           <p>
             EchoVision does not defend against intentionally misleading inputs.
             Users should avoid: Intentionally misleading photos, Cropped images
