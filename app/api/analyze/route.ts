@@ -263,22 +263,10 @@ const speakerAnalysisSchema = {
       description:
         "Total cost for all recommended fixes. Set to 0 if no fixes needed.",
     },
-
-    analysis_summary: {
-      type: SchemaType.STRING,
-      description: "Overall summary of the hall analysis and recommendations",
-    },
-
     room_status: {
       type: SchemaType.STRING,
       description:
         "Overall room quality: Excellent, Good, Needs Improvement, or Critical with percentage score of the room",
-    },
-
-    positive_features: {
-      type: SchemaType.ARRAY,
-      description: "Optional: Things the room does well acoustically",
-      items: { type: SchemaType.STRING },
     },
 
     acoustic_challenges: {
@@ -298,7 +286,6 @@ const speakerAnalysisSchema = {
     "critical_issues",
     "recommended_fixes",
     "total_estimated_cost_usd",
-    "analysis_summary",
     "stage_area",
     "room_status",
     "seating_area",

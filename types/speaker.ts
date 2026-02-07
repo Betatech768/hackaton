@@ -55,16 +55,13 @@ export interface AnalysisResult {
   stage_area: StageData;
   // Comprehensive speaker recommendations
   speaker_recommendations: SpeakerRecommendation[];
-
   // All speaker positions (flattened from recommendations)
   all_speaker_positions: SpeakerPosition[];
   seating_area: SeatingAreaProps;
   critical_issues: CriticalIssue[]; // Can be empty array
   recommended_fixes: RecommendedFix[]; // Can be empty array
   total_estimated_cost_usd: number; // Will be 0 if no fixes needed
-  analysis_summary: string;
   room_status: "Excellent" | "Good" | "Needs Improvement" | "Critical";
-  positive_features?: string[]; // Optional: things the room does well
   acoustic_challenges?: string[]; // Optional: inherent challenges of the space
 }
 
